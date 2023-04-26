@@ -1,0 +1,73 @@
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+
+const Register = () => {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  // const [securityPassword, setSecurityPassword] = useState("");
+
+  async function register(e) {
+    e.preventDefault();
+
+    const response = await fetch("http://localhost:8080/register", {
+      method: "POST",
+      body: JSON.stringify({ email, username, password }),
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.status === 200) {
+      alert("registration successful");
+    } else {
+      alert("registration failed");
+    }
+  }
+
+  return (
+    <div className="d-flex justify-content-center">
+      <Form onSubmit={register}>
+        <Form.Group className="mb-3" controlId="formEmail">
+          <Form.Label>E-mail</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formUsername">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            // type="email"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Group>
+        {/* <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Re-enter Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            value={securityPassword}
+            onChange={(e) => setSecurityPassword(e.target.value)}
+          />
+        </Form.Group> */}
+        <Button variant="primary" type="submit">
+          Register
+        </Button>
+      </Form>
+    </div>
+  );
+};
+
+export default Register;
