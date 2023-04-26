@@ -15,8 +15,8 @@ const indexRouter = require("./routes/index");
 // Set up mongoose connection
 
 // mongoose.set("strictQuery", false);
-const mongoDB = (MONGO_URL =
-  "mongodb+srv://admin:mkAwAxgnKp7s6HCb@cluster0.qu4m9sh.mongodb.net/mern_blog?retryWrites=true&w=majority");
+mongoose.set("strictQuery", false);
+const mongoDB = process.env.MONGO_URL;
 
 (async function () {
   await mongoose.connect(mongoDB);
