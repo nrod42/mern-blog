@@ -3,12 +3,12 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
-const createError = require("http-errors");
+// const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const dotenv = require("dotenv");
-const port = process.env.PORT || 8080;
 dotenv.config();
+const port = process.env.PORT || 8080;
 
 const indexRouter = require("./routes/index");
 
@@ -22,7 +22,7 @@ const mongoDB = process.env.MONGO_URL;
   await mongoose.connect(mongoDB);
 })();
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
