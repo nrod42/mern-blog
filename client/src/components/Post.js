@@ -1,6 +1,7 @@
 import React from "react";
+import { format } from "date-fns";
 
-const Post = ({ title, author, date, text, imgUrl }) => {
+const Post = ({ postTitle, postSummary, author, createdAt, postImg }) => {
   return (
     <div
       className="post"
@@ -11,20 +12,22 @@ const Post = ({ title, author, date, text, imgUrl }) => {
       }}
     >
       <div className="postImg">
-        <img src={imgUrl} alt=""></img>
+        <img src={`http://localhost:8080/${postImg}`} alt=""></img>
       </div>
       <div
         className="postContent"
         style={{ display: "flex", flexDirection: "column", gap: "10px" }}
       >
-        <h2 className="postTitle">{title}</h2>
+        <h2 className="postTitle">{postTitle}</h2>
         <div className="postMeta">
           <span className="postAuthor" style={{ fontWeight: "bold" }}>
-            {author}
+            {author.username}
           </span>{" "}
-          - <span className="postDate">{date}</span>
+          <span className="postDate">
+            {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
+          </span>
         </div>
-        <div className="postText">{text}</div>
+        <div className="postText">{postSummary}</div>
       </div>
     </div>
   );

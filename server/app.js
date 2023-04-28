@@ -22,15 +22,15 @@ const mongoDB = process.env.MONGO_URL;
   await mongoose.connect(mongoDB);
 })();
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" })); //issue when deploying?
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 app.use("/", indexRouter);
-// app.use('/users', usersRouter);
 
 // // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
