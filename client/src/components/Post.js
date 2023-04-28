@@ -1,7 +1,8 @@
 import React from "react";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
-const Post = ({ postTitle, postSummary, author, createdAt, postImg }) => {
+const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
   return (
     <div
       className="post"
@@ -11,14 +12,18 @@ const Post = ({ postTitle, postSummary, author, createdAt, postImg }) => {
         margin: "50px 0",
       }}
     >
-      <div className="postImg">
-        <img src={`http://localhost:8080/${postImg}`} alt=""></img>
-      </div>
+      <Link to={`/post/${_id}`}>
+        <div className="postImg">
+          <img src={`http://localhost:8080/${postImg}`} alt=""></img>
+        </div>
+      </Link>
       <div
         className="postContent"
         style={{ display: "flex", flexDirection: "column", gap: "10px" }}
       >
-        <h2 className="postTitle">{postTitle}</h2>
+        <Link to={`/post/${_id}`}>
+          <h2 className="postTitle">{postTitle}</h2>
+        </Link>
         <div className="postMeta">
           <span className="postAuthor" style={{ fontWeight: "bold" }}>
             {author.username}
