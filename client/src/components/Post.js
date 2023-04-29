@@ -9,12 +9,17 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
+        gap: "10px",
         margin: "50px 0",
       }}
     >
       <Link to={`/post/${_id}`}>
         <div className="postImg">
-          <img src={`http://localhost:8080/${postImg}`} alt=""></img>
+          <img
+            src={`http://localhost:8080/${postImg}`}
+            alt=""
+            style={{ width: "100%", height: "auto" }}
+          ></img>
         </div>
       </Link>
       <div
