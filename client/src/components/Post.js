@@ -9,7 +9,7 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
-        gap: "10px",
+        gap: "30px",
         margin: "50px 0",
       }}
     >

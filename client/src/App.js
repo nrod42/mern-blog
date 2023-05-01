@@ -24,6 +24,7 @@ function App() {
             <Route path={"/post/:id"} element={<PostPage />} />
           </Routes>
         </Container>
+        <footer style={{background: 'black', color: 'white'}}>NR</footer>
       </main>
     </UserContextProvider>
   );

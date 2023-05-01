@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Post from "../components/Post";
 import uniqid from "uniqid";
 
@@ -15,8 +15,11 @@ const Home = () => {
 
   return (
     <div>
-      {posts.length > 0 &&
-        posts.map((post) => <Post key={uniqid()} {...post} />)}
+      <h1 className="d-flex justify-content-center">BLOG SITE</h1>
+      <div>
+        {posts.length > 0 &&
+          posts.map((post) => <Post key={uniqid()} {...post} />)}
+      </div>
     </div>
   );
 };

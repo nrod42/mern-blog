@@ -1,4 +1,4 @@
-const { createContext, useState } = require("react");
+import React, { createContext, useState } from "react"
 
 const UserContext = createContext({});
 const UserContextProvider = ({ children }) => {

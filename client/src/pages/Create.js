@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -18,7 +18,6 @@ const Create = () => {
     data.set("postSummary", postSummary);
     data.set("postContent", postContent);
     data.set("postImg", postImg[0]);
-    console.log(postImg);
     await fetch("http://localhost:8080/create", {
       method: "POST",
       body: data,

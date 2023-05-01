@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 
@@ -12,7 +12,6 @@ const PostPage = () => {
         setPostInfo(postInfo);
       });
     });
-    console.log(params);
   }, []);
 
   if (!postInfo) return "";
