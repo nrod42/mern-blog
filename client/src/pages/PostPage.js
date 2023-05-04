@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useParams } from "react-router-dom";
 import { format } from "date-fns";
+import { UserContext } from "../UserContext";
 
 const PostPage = () => {
   const [postInfo, setPostInfo] = useState(null);
-
+  const {userInfo} = useContext(UserContext);
   const params = useParams();
   useEffect(() => {
     fetch(`http://localhost:8080/post/${params.id}`).then((res) => {
@@ -25,6 +26,11 @@ const PostPage = () => {
         <span className="postDate">
           {format(new Date(postInfo.createdAt), "MMM d, yyyy h:mm a")}
         </span>
+        {userInfo.id === postInfo.author._id && (
+          <span className="edit">
+            <Link to={`/edit/${postInfo._id}`}>Edit</Link>
+          </span>
+        )}
       </div>
       <div className="postImg">
         <img

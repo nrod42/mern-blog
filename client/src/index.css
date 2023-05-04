@@ -1,0 +1,39 @@
+body {
+    min-height: 100vh;
+
+}
+  
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+footer {
+    margin-top: auto;
+}
+
+
+/* Quill styles */
+.ql-toolbar {
+    border-color: #ced4da !important;
+    border-radius:  0.25rem 0.25rem 0 0;
+}
+
+.ql-container {
+    height: 250px !important;
+    border-color: #ced4da !important;
+    border-radius:  0 0 0.25rem 0.25rem;
+    font-size: 1rem !important;
+}
+
+.ql-container:focus-within {
+    box-shadow: 0 0 0 0.3rem rgba(13, 110, 253, 0.25) !important;
+}
+
+.ql-container:focus-within:not(:disabled):not(.disabled) {
+  outline: 1px solid #86b7fe !important;
+  
+}
+  
