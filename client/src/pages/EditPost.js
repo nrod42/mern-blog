@@ -59,7 +59,7 @@ const EditPost = () => {
     data.set("postTitle", postTitle);
     data.set("postSummary", postSummary);
     data.set("postContent", postContent);
-    data.set("postImg", postImg?.[0]);
+    data.set("postImg", postImg[0]);
     data.set("id", id);
     await fetch("http://localhost:8080/post", {
       method: "PUT",

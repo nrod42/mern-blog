@@ -14,19 +14,23 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:8080/login", {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
-    if (res.ok) {
-      res.json().then((userInfo) => {
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+  
+      if (response.ok) {
+        const userInfo = await response.json();
         setUserInfo(userInfo);
         navigate("/");
-      });
-    } else {
-      alert("Wrong credentials");
+      } else {
+        alert("Wrong credentials");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

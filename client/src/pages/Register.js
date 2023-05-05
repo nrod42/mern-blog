@@ -6,7 +6,6 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [securityPassword, setSecurityPassword] = useState("");
 
   async function register(e) {
     e.preventDefault();
@@ -53,15 +52,6 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        {/* <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Re-enter Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={securityPassword}
-            onChange={(e) => setSecurityPassword(e.target.value)}
-          />
-        </Form.Group> */}
         <Button variant="primary" type="submit">
           Register
         </Button>

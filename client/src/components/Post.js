@@ -1,45 +1,42 @@
 import React from "react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
+import Row  from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Image from "react-bootstrap/Image";
+
+
 
 const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
   return (
-    <div
-      className="post"
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "30px",
-        margin: "50px 0",
-      }}
-    >
-      <Link to={`/post/${_id}`}>
-        <div className="postImg">
-          <img
-            src={`http://localhost:8080/${postImg}`}
-            alt=""
-            style={{ width: "100%", height: "auto" }}
-          ></img>
-        </div>
-      </Link>
-      <div
-        className="postContent"
-        style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-      >
-        <Link to={`/post/${_id}`}>
-          <h2 className="postTitle">{postTitle}</h2>
+    <Row className="post">
+      <Col md={6}>
+        <Link to={`/post/${_id}`} >
+          <div className="postImg">
+            <Image
+              src={`http://localhost:8080/${postImg}`}
+              alt=""
+              fluid
+            />
+          </div>
         </Link>
-        <div className="postMeta">
-          <span className="postAuthor" style={{ fontWeight: "bold" }}>
-            {author.username}
-          </span>{" "}
-          <span className="postDate">
-            {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
-          </span>
+      </Col>
+      <Col md={6}>
+        <div className="postInfo d-flex flex-column gap-2">
+          <Link to={`/post/${_id}`} className={"postLink"}
+>
+            <h2 className="postTitle">{postTitle}</h2>
+          </Link>
+          <div className="postMeta d-flex align-items-center">
+            <span className="postAuthor me-2">{author.username}</span>
+            <span className="postDate text-muted">
+              {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
+            </span>
+          </div>
+          <div className="postSummary">{postSummary}</div>
         </div>
-        <div className="postText">{postSummary}</div>
-      </div>
-    </div>
+      </Col>
+    </Row>
   );
 };
 

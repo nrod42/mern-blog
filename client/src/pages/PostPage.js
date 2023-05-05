@@ -7,13 +7,20 @@ const PostPage = () => {
   const [postInfo, setPostInfo] = useState(null);
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
-  useEffect(() => {
-    fetch(`http://localhost:8080/post/${id}`).then((res) => {
-      res.json().then((postInfo) => {
-        setPostInfo(postInfo);
-      });
-    });
-  }, []);
+
+useEffect(() => {
+  const fetchPostInfo = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/post/${id}`);
+      const postInfo = await response.json();
+      setPostInfo(postInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchPostInfo();
+}, []);
 
   if (!postInfo) return "";
   return (

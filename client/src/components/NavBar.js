@@ -9,15 +9,22 @@ const NavBar = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
 
   useEffect(() => {
-    // Verify user profile
-    fetch("http://localhost:8080/profile", {
-      credentials: "include",
-    }).then((res) => {
-      res.json().then((userInfo) => {
+    // Verify User Profile
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/profile", {
+          credentials: "include",
+        });
+        const userInfo = await response.json();
         setUserInfo(userInfo);
-      });
-    });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchUserProfile();
   }, []);
+  
 
   const logout = () => {
     fetch("http://localhost:8080/logout", {
@@ -33,7 +40,7 @@ const NavBar = () => {
       expand="lg"
       bg="dark"
       variant="dark"
-      className="mb-5"
+      // className="mb-5"
     >
       <Container>
         <Navbar.Brand as={Link} to={"/"}>
