@@ -92,4 +92,25 @@ router.get("/post/:id", async (req, res) => {
   res.json(postDoc);
 });
 
+router.put("/post/", uploadMiddleware.single("postImg"), async (req, res) => {
+  // const { id } = req.params;
+  if (req.file) {
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
+    const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
+    const newImgPath = `${path}.${fileExt}`;
+    fs.renameSync(path, newImgPath);
+  }
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const { id, postTitle, postSummary, postContent } = req.body;
+    const postDoc = await Post.findById(id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json("You are not the author!");
+    }
+    await postDoc.update({ postTitle, postSummary, postContent, postImg });
+  });
+});
 module.exports = router;

@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { UserContext } from "../UserContext";
 
-const Login = () => {
+const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -59,4 +59,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

@@ -5,10 +5,10 @@ import { UserContext } from "../UserContext";
 
 const PostPage = () => {
   const [postInfo, setPostInfo] = useState(null);
-  const {userInfo} = useContext(UserContext);
-  const params = useParams();
+  const { userInfo } = useContext(UserContext);
+  const { id } = useParams();
   useEffect(() => {
-    fetch(`http://localhost:8080/post/${params.id}`).then((res) => {
+    fetch(`http://localhost:8080/post/${id}`).then((res) => {
       res.json().then((postInfo) => {
         setPostInfo(postInfo);
       });

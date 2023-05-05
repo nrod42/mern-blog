@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css'
-
+import "react-quill/dist/quill.snow.css";
 
 const Create = () => {
   const [postTitle, setPostTitle] = useState("");
@@ -17,20 +16,32 @@ const Create = () => {
   // React Quill Toolbar Options
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline','strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-      ['link', 'image'],
-      ['clean']
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image"],
+      ["clean"],
     ],
-  }
+  };
 
   const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-  ]
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+  ];
 
   const createNewPost = async (e) => {
     e.preventDefault();
@@ -76,11 +87,12 @@ const Create = () => {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="postText">
+          <Form.Label>Body</Form.Label>
           <ReactQuill
-            modules={modules} 
-            formats={formats} 
+            modules={modules}
+            formats={formats}
             value={postContent}
-            onChange={(newValue) => setPostContent(newValue)} 
+            onChange={(newValue) => setPostContent(newValue)}
           />
         </Form.Group>
 

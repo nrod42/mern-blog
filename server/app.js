@@ -22,7 +22,12 @@ const mongoDB = process.env.MONGO_URL;
   await mongoose.connect(mongoDB);
 })();
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" })); //issue when deploying?
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+  })
+); //issue when deploying?
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
