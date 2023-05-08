@@ -12,29 +12,28 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
     <Row className="post">
       <Col md={6}>
         <Link to={`/post/${_id}`} >
-          <div className="postImg">
-            <Image
-              src={`http://localhost:8080/${postImg}`}
-              alt=""
-              fluid
-            />
-          </div>
+          <Image
+            src={`http://localhost:8080/${postImg}`}
+            alt=""
+            fluid
+            rounded
+          />
         </Link>
       </Col>
-      <Col md={6}>
-        <div className="postInfo d-flex flex-column gap-2">
-          <Link to={`/post/${_id}`} className={"postLink"}
->
-            <h2 className="postTitle">{postTitle}</h2>
+      <Col md={6} className="d-flex flex-column gap-2">
+        <Row className="postInfo d-flex flex-column gap-2">
+          <Link to={`/post/${_id}`} className={"postLink"}>
+            <h2>{postTitle}</h2>
           </Link>
-          <div className="postMeta d-flex align-items-center">
-            <span className="postAuthor me-2">{author.username}</span>
-            <span className="postDate text-muted">
-              {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
-            </span>
-          </div>
-          <div className="postSummary">{postSummary}</div>
-        </div>
+        </Row>
+        <Row className="postMeta d-flex align-items-center">
+          <Col md="auto" className="fw-bold">{author.username}</Col>
+          <Col md="auto" className="text-muted">
+            {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
+          </Col>
+        </Row>
+        <Row>{postSummary}</Row>
+
       </Col>
     </Row>
   );

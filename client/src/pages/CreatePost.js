@@ -59,48 +59,46 @@ const Create = () => {
   };
 
   return (
-    <div>
-      <Form onSubmit={createNewPost}>
-        <Form.Group className="mb-3" controlId="postTitle">
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            value={postTitle}
-            onChange={(e) => setPostTitle(e.target.value)}
-          />
-        </Form.Group>
+    <Form onSubmit={createNewPost}>
+      <Form.Group className="mb-3" controlId="postTitle">
+        <Form.Label>Title</Form.Label>
+        <Form.Control
+          value={postTitle}
+          onChange={(e) => setPostTitle(e.target.value)}
+        />
+      </Form.Group>
 
-        <Form.Group className="mb-3" controlId="postSummary">
-          <Form.Label>Summary</Form.Label>
-          <Form.Control
-            value={postSummary}
-            onChange={(e) => setPostSummary(e.target.value)}
-          />
-        </Form.Group>
+      <Form.Group className="mb-3" controlId="postSummary">
+        <Form.Label>Summary</Form.Label>
+        <Form.Control
+          value={postSummary}
+          onChange={(e) => setPostSummary(e.target.value)}
+        />
+      </Form.Group>
 
-        <Form.Group className="mb-3" controlId="newPostImg">
-          <Form.Label>Upload Image</Form.Label>
-          <Form.Control
-            type="file"
-            // value={postImgs}
-            onChange={(e) => setPostImg(e.target.files)}
-          />
-        </Form.Group>
+      <Form.Group className="mb-3" controlId="newPostImg">
+        <Form.Label>Upload Image</Form.Label>
+        <Form.Control
+          type="file"
+          // value={postImgs}
+          onChange={(e) => setPostImg(e.target.files)}
+        />
+      </Form.Group>
 
-        <Form.Group className="mb-3" controlId="postText">
-          <Form.Label>Body</Form.Label>
-          <ReactQuill
-            modules={modules}
-            formats={formats}
-            value={postContent}
-            onChange={(newValue) => setPostContent(newValue)}
-          />
-        </Form.Group>
+      <Form.Group className="mb-3" controlId="postText">
+        <Form.Label>Body</Form.Label>
+        <ReactQuill
+          modules={modules}
+          formats={formats}
+          value={postContent}
+          onChange={(newValue) => setPostContent(newValue)}
+        />
+      </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Create Post
-        </Button>
-      </Form>
-    </div>
+      <Button variant="primary" type="submit">
+        Create Post
+      </Button>
+    </Form>
   );
 };
 

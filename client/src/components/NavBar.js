@@ -40,7 +40,6 @@ const NavBar = () => {
       expand="lg"
       bg="dark"
       variant="dark"
-      // className="mb-5"
     >
       <Container>
         <Navbar.Brand as={Link} to={"/"}>

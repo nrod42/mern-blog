@@ -23,40 +23,38 @@ const Register = () => {
   }
 
   return (
-    <div className="d-flex justify-content-center">
-      <Form onSubmit={register}>
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>E-mail</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formUsername">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            // type="email"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Register
-        </Button>
-      </Form>
-    </div>
+    <Form className="d-flex flex-column justify-content-center" onSubmit={register}>
+      <Form.Group className="mb-3" controlId="formEmail">
+        <Form.Label>E-mail</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formUsername">
+        <Form.Label>Username</Form.Label>
+        <Form.Control
+          // type="email"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formPassword">
+        <Form.Label>Password</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </Form.Group>
+      <Button variant="primary" type="submit">
+        Register
+      </Button>
+    </Form>
   );
 };
 

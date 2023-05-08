@@ -16,7 +16,7 @@ function App() {
     <UserContextProvider>
       <main>
         <NavBar />
-        <Container>
+        <Container className="mt-4 mb-5">
           <Routes>
             <Route index element={<Home />} />
             <Route path={"/login"} element={<LoginPage />} />
@@ -27,7 +27,7 @@ function App() {
           </Routes>
         </Container>
       </main>
-      <footer style={{ background: "black", color: "white" }}>NR</footer>
+      <footer>NR</footer>
     </UserContextProvider>
   );
 }
