@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const dotenv = require("dotenv");
 dotenv.config();
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 const indexRouter = require("./routes/index");
 
@@ -25,7 +25,7 @@ const mongoDB = process.env.MONGO_URL;
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://mernblog-2g36.onrender.com/", "https://www.mernblog-2g36.onrender.com/"],
   })
 ); //issue when deploying?
 app.use(logger("dev"));
@@ -54,7 +54,7 @@ app.use("/", indexRouter);
 // });
 // console.log(process.env.MONGO_URL);
 
-app.listen(port);
-console.log(`Server is listening on port ${port}`);
+app.listen(PORT);
+console.log(`Server is listening on port ${PORT}`);
 
 module.exports = app;

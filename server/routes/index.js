@@ -110,7 +110,7 @@ router.put("/post/", uploadMiddleware.single("postImg"), async (req, res) => {
     if (!isAuthor) {
       return res.status(400).json("You are not the author!");
     }
-    await postDoc.update({ postTitle, postSummary, postContent, postImg });
+    await postDoc.update({ postTitle, postSummary, postContent });
   });
 });
 module.exports = router;
