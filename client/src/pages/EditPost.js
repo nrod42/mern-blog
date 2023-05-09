@@ -44,13 +44,19 @@ const EditPost = () => {
   ];
 
   useEffect(() => {
-    fetch(`http://localhost:8080/post/${id}`).then((res) => {
-      res.json().then((postInfo) => {
+    const fetchPostInfo = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/post/${id}`);
+        const postInfo = await response.json();
         setPostTitle(postInfo.postTitle);
         setPostSummary(postInfo.postSummary);
         setPostContent(postInfo.postContent);
-      });
-    });
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      }
+    };
+  
+    fetchPostInfo();
   }, []);
 
   const updatePost = async (e) => {

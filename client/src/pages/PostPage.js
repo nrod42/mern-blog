@@ -27,7 +27,7 @@ const PostPage = () => {
 
   if (!postInfo) return "";
   return (
-    <Col className="d-flex flex-column gap-2">
+    <Col className="d-flex flex-column gap-3">
       <Row>
         <h1>{postInfo.postTitle}</h1>
       </Row>
@@ -48,17 +48,17 @@ const PostPage = () => {
         )}
       </Row>
 
-      <Row className=" d-flex justify-content-center">
+      {/* <Row className=" d-flex justify-content-center"> */}
         <Image
           src={`http://localhost:8080/${postInfo.postImg}`}
           alt=""
           fluid
           rounded
-          style={{maxHeight: '600px', width: "auto"}}
+          style={{height: 'auto', width: "100%"}}
         />
-      </Row>
+      {/* </Row> */}
 
-      <Row>{postInfo.postContent}</Row>
+      <Row><div>{postInfo.postContent}</div></Row>
     </Col>
   );
 };

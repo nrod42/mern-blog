@@ -80,7 +80,6 @@ const Create = () => {
         <Form.Label>Upload Image</Form.Label>
         <Form.Control
           type="file"
-          // value={postImgs}
           onChange={(e) => setPostImg(e.target.files)}
         />
       </Form.Group>

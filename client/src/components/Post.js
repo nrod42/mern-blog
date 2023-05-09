@@ -5,8 +5,6 @@ import Row  from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 
-
-
 const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
   return (
     <Row className="post">
@@ -26,13 +24,13 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
             <h2>{postTitle}</h2>
           </Link>
         </Row>
-        <Row className="postMeta d-flex align-items-center">
+        <Row className="d-flex align-items-center">
           <Col md="auto" className="fw-bold">{author.username}</Col>
           <Col md="auto" className="text-muted">
             {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
           </Col>
         </Row>
-        <Row>{postSummary}</Row>
+        <Row><div>{postSummary}</div></Row>
 
       </Col>
     </Row>
