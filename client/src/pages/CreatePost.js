@@ -50,7 +50,7 @@ const Create = () => {
     data.set("postSummary", postSummary);
     data.set("postContent", postContent);
     data.set("postImg", postImg[0]);
-    await fetch("http://localhost:8080/create", {
+    await fetch("https://mernblog-api-2lf4.onrender.com/create", {
       method: "POST",
       body: data,
       credentials: "include",

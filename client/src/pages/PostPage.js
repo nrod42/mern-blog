@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
 import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row"
+import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 
 const PostPage = () => {
@@ -14,7 +14,9 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPostInfo = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/post/${id}`);
+        const response = await fetch(
+          `https://mernblog-api-2lf4.onrender.com/post/${id}`
+        );
         const postInfo = await response.json();
         setPostInfo(postInfo);
       } catch (error) {
@@ -42,23 +44,23 @@ const PostPage = () => {
         </Col>
 
         {userInfo.id === postInfo.author._id && (
-            <Col md="auto">
-              <Link to={`/edit/${postInfo._id}`}>Edit</Link>
-            </Col>
+          <Col md="auto">
+            <Link to={`/edit/${postInfo._id}`}>Edit</Link>
+          </Col>
         )}
       </Row>
 
-      {/* <Row className=" d-flex justify-content-center"> */}
-        <Image
-          src={`http://localhost:8080/${postInfo.postImg}`}
-          alt=""
-          fluid
-          rounded
-          style={{height: 'auto', width: "100%"}}
-        />
-      {/* </Row> */}
+      <Image
+        src={`https://mernblog-api-2lf4.onrender.com/${postInfo.postImg}`}
+        alt=""
+        fluid
+        rounded
+        style={{ height: "auto", width: "100%" }}
+      />
 
-      <Row><div>{postInfo.postContent}</div></Row>
+      <Row>
+        <div>{postInfo.postContent}</div>
+      </Row>
     </Col>
   );
 };

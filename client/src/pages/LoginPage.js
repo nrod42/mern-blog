@@ -15,13 +15,16 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-  
+      const response = await fetch(
+        "https://mernblog-api-2lf4.onrender.com/login",
+        {
+          method: "POST",
+          body: JSON.stringify({ username, password }),
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
+
       if (response.ok) {
         const userInfo = await response.json();
         setUserInfo(userInfo);
@@ -35,7 +38,10 @@ const LoginPage = () => {
   };
 
   return (
-    <Form className="d-flex flex-column justify-content-center" onSubmit={handleSubmit}>
+    <Form
+      className="d-flex flex-column justify-content-center"
+      onSubmit={handleSubmit}
+    >
       <Form.Group className="mb-3" controlId="formUsername">
         <Form.Label>Username</Form.Label>
         <Form.Control

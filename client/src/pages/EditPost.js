@@ -52,10 +52,10 @@ const EditPost = () => {
         setPostSummary(postInfo.postSummary);
         setPostContent(postInfo.postContent);
       } catch (error) {
-        console.error('Error fetching post:', error);
+        console.error("Error fetching post:", error);
       }
     };
-  
+
     fetchPostInfo();
   }, []);
 

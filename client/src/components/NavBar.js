@@ -12,22 +12,24 @@ const NavBar = () => {
     // Verify User Profile
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("http://localhost:8080/profile", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://mernblog-api-2lf4.onrender.com/profile",
+          {
+            credentials: "include",
+          }
+        );
         const userInfo = await response.json();
         setUserInfo(userInfo);
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     fetchUserProfile();
   }, []);
-  
 
   const logout = () => {
-    fetch("http://localhost:8080/logout", {
+    fetch("https://mernblog-api-2lf4.onrender.com/logout", {
       credentials: "include",
       method: "POST",
     });
@@ -35,12 +37,7 @@ const NavBar = () => {
   };
 
   return (
-    <Navbar
-      collapseOnSelect
-      expand="lg"
-      bg="dark"
-      variant="dark"
-    >
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to={"/"}>
           MERN Blog

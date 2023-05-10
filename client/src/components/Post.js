@@ -1,7 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import Row  from "react-bootstrap/Row";
+import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 
@@ -9,9 +9,9 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
   return (
     <Row className="post">
       <Col md={6}>
-        <Link to={`/post/${_id}`} >
+        <Link to={`/post/${_id}`}>
           <Image
-            src={`http://localhost:8080/${postImg}`}
+            src={`https://mernblog-api-2lf4.onrender.com/${postImg}`}
             alt=""
             fluid
             rounded
@@ -25,13 +25,16 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
           </Link>
         </Row>
         <Row className="d-flex align-items-center">
-          <Col md="auto" className="fw-bold">{author.username}</Col>
+          <Col md="auto" className="fw-bold">
+            {author.username}
+          </Col>
           <Col md="auto" className="text-muted">
             {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
           </Col>
         </Row>
-        <Row><div>{postSummary}</div></Row>
-
+        <Row>
+          <div>{postSummary}</div>
+        </Row>
       </Col>
     </Row>
   );
