@@ -25,7 +25,13 @@ const mongoDB = process.env.MONGO_URL;
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://mernblog-2g36.onrender.com/", "https://www.mernblog-2g36.onrender.com/"],
+    origin: [
+      "http://localhost:3000",
+      "https://mernblog-2g36.onrender.com",
+      "https://www.mernblog-2g36.onrender.com",
+      "https://mernblog-api-2lf4.onrender.com",
+      "https://www.mernblog-api-2lf4.onrender.com",
+    ],
   })
 ); //issue when deploying?
 app.use(logger("dev"));
