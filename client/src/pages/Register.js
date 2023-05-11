@@ -10,14 +10,11 @@ const Register = () => {
   async function register(e) {
     e.preventDefault();
 
-    const response = await fetch(
-      "https://mernblog-api-2lf4.onrender.com/register",
-      {
-        method: "POST",
-        body: JSON.stringify({ email, username, password }),
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const response = await fetch("http://localhost:8080/register", {
+      method: "POST",
+      body: JSON.stringify({ email, username, password }),
+      headers: { "Content-Type": "application/json" },
+    });
     if (response.status === 200) {
       alert("registration successful");
     } else {

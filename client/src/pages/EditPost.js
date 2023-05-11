@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactQuillEditor from "../components/ReactQuillEditor";
+import "react-quill/dist/quill.snow.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -13,35 +13,6 @@ const EditPost = () => {
   const [postImg, setPostImg] = useState("");
 
   const navigate = useNavigate();
-
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["link", "image"],
-      ["clean"],
-    ],
-  };
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-  ];
 
   useEffect(() => {
     const fetchPostInfo = async () => {
@@ -65,14 +36,19 @@ const EditPost = () => {
     data.set("postTitle", postTitle);
     data.set("postSummary", postSummary);
     data.set("postContent", postContent);
-    data.set("postImg", postImg[0]);
-    data.set("id", id);
-    await fetch("http://localhost:8080/post", {
+    // data.set("id", id);
+    if (postImg?.[0]) {
+      data.set("postImg", postImg?.[0]);
+    }
+
+    const res = await fetch(`http://localhost:8080/post/${id}`, {
       method: "PUT",
       body: data,
       credentials: "include",
     });
-    navigate(`/post/${id}`);
+    if (res.ok) {
+      navigate(`/post/${id}`);
+    }
   };
 
   return (
@@ -103,9 +79,7 @@ const EditPost = () => {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="postText">
-        <ReactQuill
-          modules={modules}
-          formats={formats}
+        <ReactQuillEditor
           value={postContent}
           onChange={(newValue) => setPostContent(newValue)}
         />

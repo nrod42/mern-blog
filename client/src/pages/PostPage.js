@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
+import DOMPurify from "dompurify";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
+import Button from "react-bootstrap/Button";
 
 const PostPage = () => {
   const [postInfo, setPostInfo] = useState(null);
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPostInfo = async () => {
       try {
-        const response = await fetch(
-          `https://mernblog-api-2lf4.onrender.com/post/${id}`
-        );
+        const response = await fetch(`http://localhost:8080/post/${id}`);
         const postInfo = await response.json();
         setPostInfo(postInfo);
       } catch (error) {
@@ -27,7 +29,22 @@ const PostPage = () => {
     fetchPostInfo();
   }, []);
 
+  const deletePost = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/post/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (!postInfo) return "";
+
   return (
     <Col className="d-flex flex-column gap-3">
       <Row>
@@ -45,13 +62,23 @@ const PostPage = () => {
 
         {userInfo.id === postInfo.author._id && (
           <Col md="auto">
-            <Link to={`/edit/${postInfo._id}`}>Edit</Link>
+            <Link to={`/edit/${postInfo._id}`}>
+              <Button variant="success">Edit</Button>
+            </Link>
+          </Col>
+        )}
+
+        {userInfo.id === postInfo.author._id && (
+          <Col md="auto">
+            <Button variant="danger" onClick={deletePost}>
+              Delete
+            </Button>
           </Col>
         )}
       </Row>
 
       <Image
-        src={`https://mernblog-api-2lf4.onrender.com/${postInfo.postImg}`}
+        src={`http://localhost:8080/${postInfo.postImg}`}
         alt=""
         fluid
         rounded
@@ -59,7 +86,12 @@ const PostPage = () => {
       />
 
       <Row>
-        <div>{postInfo.postContent}</div>
+        {/* Makes sure user inputted HTML is safe*/}
+        <div
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(postInfo.postContent),
+          }}
+        />
       </Row>
     </Col>
   );

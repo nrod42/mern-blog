@@ -81,9 +81,8 @@ router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
       postImg: newImgPath,
       author: info.id,
     });
+    res.json(postDoc);
   });
-
-  res.json(postDoc);
 });
 
 router.get("/post/:id", async (req, res) => {
@@ -92,25 +91,55 @@ router.get("/post/:id", async (req, res) => {
   res.json(postDoc);
 });
 
-router.put("/post/", uploadMiddleware.single("postImg"), async (req, res) => {
-  // const { id } = req.params;
-  if (req.file) {
-    const { originalname, path } = req.file;
-    const parts = originalname.split(".");
-    const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
-    const newImgPath = `${path}.${fileExt}`;
-    fs.renameSync(path, newImgPath);
-  }
-  const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { id, postTitle, postSummary, postContent } = req.body;
-    const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-    if (!isAuthor) {
-      return res.status(400).json("You are not the author!");
+router.put(
+  "/post/:id",
+  uploadMiddleware.single("postImg"),
+  async (req, res) => {
+    const { id } = req.params;
+    let newImgPath = null;
+    if (req.file) {
+      const { originalname, path } = req.file;
+      const parts = originalname.split(".");
+      const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
+      newImgPath = `${path}.${fileExt}`;
+      fs.renameSync(path, newImgPath);
     }
-    await postDoc.update({ postTitle, postSummary, postContent });
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+      const { postTitle, postSummary, postContent } = req.body;
+      const postDoc = await Post.findById(id);
+      const isAuthor =
+        JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+      // res.json({ isAuthor });
+      if (!isAuthor) {
+        return res.status(400).json("You are not the author!");
+      }
+      await Post.updateOne(
+        { _id: id },
+        {
+          postTitle,
+          postSummary,
+          postContent,
+          postImg: newImgPath ? newImgPath : postDoc.postImg,
+        }
+      );
+      res.json(postDoc);
+    });
+  }
+);
+
+router.delete("/post/:id", async (req, res) => {
+  const { id } = req.params;
+  const postDoc = await Post.findById(id);
+
+  fs.unlink(postDoc.postImg, (err) => {
+    if (err) {
+      console.error("Error deleting file:", err);
+    }
   });
+  await postDoc.deleteOne({ _id: id });
+  res.sendStatus(204);
 });
+
 module.exports = router;

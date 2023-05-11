@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import ReactQuill from "react-quill";
+import ReactQuillEditor from "../components/ReactQuillEditor";
 import "react-quill/dist/quill.snow.css";
 
 const Create = () => {
@@ -13,36 +13,6 @@ const Create = () => {
 
   const navigate = useNavigate();
 
-  // React Quill Toolbar Options
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["link", "image"],
-      ["clean"],
-    ],
-  };
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-  ];
-
   const createNewPost = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -50,7 +20,7 @@ const Create = () => {
     data.set("postSummary", postSummary);
     data.set("postContent", postContent);
     data.set("postImg", postImg[0]);
-    await fetch("https://mernblog-api-2lf4.onrender.com/create", {
+    await fetch("http://localhost:8080/create", {
       method: "POST",
       body: data,
       credentials: "include",
@@ -86,9 +56,7 @@ const Create = () => {
 
       <Form.Group className="mb-3" controlId="postText">
         <Form.Label>Body</Form.Label>
-        <ReactQuill
-          modules={modules}
-          formats={formats}
+        <ReactQuillEditor
           value={postContent}
           onChange={(newValue) => setPostContent(newValue)}
         />

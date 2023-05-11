@@ -11,7 +11,7 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
       <Col md={6}>
         <Link to={`/post/${_id}`}>
           <Image
-            src={`https://mernblog-api-2lf4.onrender.com/${postImg}`}
+            src={`http://localhost:8080/${postImg}`}
             alt=""
             fluid
             rounded
