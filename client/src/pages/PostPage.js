@@ -46,52 +46,55 @@ const PostPage = () => {
   if (!postInfo) return "";
 
   return (
-    <Col className="d-flex flex-column gap-3">
-      <Row>
-        <h1>{postInfo.postTitle}</h1>
-      </Row>
-
-      <Row>
-        <Col md="auto" style={{ fontWeight: "bold" }}>
-          {postInfo.author.username}
+    <Col>
+      <Row className="mb-2">
+        <Col md={{ span: 8, offset: 2 }} className="text-center">
+          <h1>{postInfo.postTitle}</h1>
+          <div className="d-flex justify-content-center">
+            <p className="text-muted">
+              <span className="fw-bold">{postInfo.author.username}</span>
+              {" - "}
+              <span>
+                {format(new Date(postInfo.createdAt), "MMM d, yyyy h:mm a")}
+              </span>
+            </p>
+          </div>
         </Col>
-
-        <Col md="auto">
-          {format(new Date(postInfo.createdAt), "MMM d, yyyy h:mm a")}
-        </Col>
-
-        {userInfo.id === postInfo.author._id && (
-          <Col md="auto">
+        <Col md="auto" className="ms-auto my-auto text-center">
+          {/* If user is not logged in or if the current user isn't the post author, don't show buttons.*/}
+          {userInfo?.id === postInfo.author._id && (
             <Link to={`/edit/${postInfo._id}`}>
-              <Button variant="success">Edit</Button>
+              <Button variant="dark">Edit</Button>
             </Link>
-          </Col>
-        )}
+          )}
 
-        {userInfo.id === postInfo.author._id && (
-          <Col md="auto">
-            <Button variant="danger" onClick={deletePost}>
+          {userInfo?.id === postInfo.author._id && (
+            <Button variant="danger" className="ms-2" onClick={deletePost}>
               Delete
             </Button>
-          </Col>
-        )}
+          )}
+        </Col>
       </Row>
 
-      <Image
-        src={`http://localhost:8080/${postInfo.postImg}`}
-        alt=""
-        fluid
-        rounded
-        style={{ height: "auto", width: "100%" }}
-      />
+      <Row className="mb-4">
+        <Image
+          src={`http://localhost:8080/${postInfo.postImg}`}
+          alt=""
+          fluid
+          rounded
+          style={{ height: "auto", width: "100%" }}
+        />
+      </Row>
 
       <Row>
-        {/* Makes sure user inputted HTML is safe*/}
-        <div
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(postInfo.postContent),
-          }}
-        />
+        <Col>
+          {/* Makes sure user inputted HTML is safe */}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(postInfo.postContent),
+            }}
+          />
+        </Col>
       </Row>
     </Col>
   );

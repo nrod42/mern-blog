@@ -25,12 +25,11 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
           </Link>
         </Row>
         <Row className="d-flex align-items-center">
-          <Col md="auto" className="fw-bold">
-            {author.username}
-          </Col>
-          <Col md="auto" className="text-muted">
-            {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
-          </Col>
+          <p className="text-muted">
+            <span className="fw-bold">{author.username}</span>
+            {" - "}
+            <span>{format(new Date(createdAt), "MMM d, yyyy h:mm a")}</span>
+          </p>
         </Row>
         <Row>
           <div>{postSummary}</div>
