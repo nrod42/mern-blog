@@ -1,3 +1,4 @@
+import React from "react";
 import ReactQuill from "react-quill";
 
 const ReactQuillEditor = ({ value, onChange }) => {

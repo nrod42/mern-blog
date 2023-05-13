@@ -28,7 +28,7 @@ const EditPost = () => {
     };
 
     fetchPostInfo();
-  }, []);
+  }, [id]);
 
   const updatePost = async (e) => {
     e.preventDefault();

@@ -27,7 +27,7 @@ const PostPage = () => {
     };
 
     fetchPostInfo();
-  }, []);
+  }, [id]);
 
   const deletePost = async () => {
     try {

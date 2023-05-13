@@ -1,12 +1,18 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { UserContext } from "../UserContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 const NavBar = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
+
+  const navigate = useNavigate();
+
+  const [ query, setQuery ] = useState('');
 
   useEffect(() => {
     // Verify User Profile
@@ -23,15 +29,19 @@ const NavBar = () => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [setUserInfo]);
 
-  const logout = () => {
-    fetch("http://localhost:8080/logout", {
+  const logout = async () => {
+    await fetch("http://localhost:8080/logout", {
       credentials: "include",
       method: "POST",
     });
     setUserInfo(null);
   };
+
+  const fetchResults = async () => {
+    navigate(`/results/${query}`)
+  }
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -59,6 +69,17 @@ const NavBar = () => {
                 </Nav.Link>
               </>
             )}
+          <Form className="d-flex" onSubmit={fetchResults}>
+            <Form.Control
+              type="search"
+              placeholder="Search"
+              className="me-2"
+              aria-label="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button type="submit" variant="outline-success">Search</Button>
+          </Form>
           </Nav>
         </Navbar.Collapse>
       </Container>

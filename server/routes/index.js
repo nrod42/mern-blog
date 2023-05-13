@@ -143,3 +143,12 @@ router.delete("/post/:id", async (req, res) => {
 });
 
 module.exports = router;
+
+router.get("/results/:query", async (req, res) => {
+  const { query } = req.params;
+  //handle mongoose search
+  // const test = Post.findOne();
+  // console.log(test)
+  const test = [await Post.findOne().populate("author", ["username"]), await Post.findOne().populate("author", ["username"])]
+  res.json(test)
+})
