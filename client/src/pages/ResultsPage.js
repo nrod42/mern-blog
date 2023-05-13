@@ -12,10 +12,7 @@ const ResultsPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/results/${query}`
-        );
-        // console.log(response)
+        const response = await fetch(`http://localhost:8080/results/${query}`);
         const results = await response.json();
         setResults(results);
       } catch (error) {
@@ -29,7 +26,9 @@ const ResultsPage = () => {
   return (
     <Col className="d-flex flex-column gap-4">
       <Row>
-        <h1 className="d-flex justify-content-center">Showing results for "{query}":</h1>
+        <h1 className="d-flex justify-content-center">
+          Showing results for "{query}":
+        </h1>
       </Row>
       {results.map((result) => (
         <Row key={uniqid()}>

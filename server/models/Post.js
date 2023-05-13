@@ -14,6 +14,8 @@ const PostSchema = new Schema(
   }
 );
 
+PostSchema.index({ postTitle: "text", postContent: "text" });
+
 const PostModel = model("Post", PostSchema);
 
 module.exports = PostModel;

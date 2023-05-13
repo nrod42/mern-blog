@@ -12,7 +12,7 @@ const NavBar = () => {
 
   const navigate = useNavigate();
 
-  const [ query, setQuery ] = useState('');
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     // Verify User Profile
@@ -39,9 +39,10 @@ const NavBar = () => {
     setUserInfo(null);
   };
 
-  const fetchResults = async () => {
-    navigate(`/results/${query}`)
-  }
+  const fetchResults = async (e) => {
+    e.preventDefault();
+    navigate(`/results/${query}`);
+  };
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -50,7 +51,21 @@ const NavBar = () => {
           MERN Blog
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse className="justify-content-end">
+        <Navbar.Collapse className="justify-content-between">
+          <div></div>
+          <Form className="d-flex" onSubmit={fetchResults}>
+            <Form.Control
+              type="search"
+              placeholder="Search"
+              className="me-2"
+              aria-label="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button type="submit" variant="outline-success">
+              Search
+            </Button>
+          </Form>
           <Nav>
             {userInfo ? (
               <>
@@ -69,17 +84,6 @@ const NavBar = () => {
                 </Nav.Link>
               </>
             )}
-          <Form className="d-flex" onSubmit={fetchResults}>
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <Button type="submit" variant="outline-success">Search</Button>
-          </Form>
           </Nav>
         </Navbar.Collapse>
       </Container>

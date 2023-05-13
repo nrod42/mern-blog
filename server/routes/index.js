@@ -111,7 +111,6 @@ router.put(
       const postDoc = await Post.findById(id);
       const isAuthor =
         JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-      // res.json({ isAuthor });
       if (!isAuthor) {
         return res.status(400).json("You are not the author!");
       }
@@ -133,6 +132,7 @@ router.delete("/post/:id", async (req, res) => {
   const { id } = req.params;
   const postDoc = await Post.findById(id);
 
+  // Get rid of post image from uploads folder
   fs.unlink(postDoc.postImg, (err) => {
     if (err) {
       console.error("Error deleting file:", err);
@@ -146,9 +146,11 @@ module.exports = router;
 
 router.get("/results/:query", async (req, res) => {
   const { query } = req.params;
-  //handle mongoose search
-  // const test = Post.findOne();
-  // console.log(test)
-  const test = [await Post.findOne().populate("author", ["username"]), await Post.findOne().populate("author", ["username"])]
-  res.json(test)
-})
+  const results = await Post.find(
+    { $text: { $search: query } },
+    { score: { $meta: "textScore" } }
+  )
+    .populate("author", ["username"])
+    .sort({ score: { $meta: "textScore" } });
+  res.json(results);
+});
