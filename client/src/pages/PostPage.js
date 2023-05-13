@@ -18,7 +18,7 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPostInfo = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/post/${id}`);
+        const response = await fetch(`https://mernblog-api-2lf4.onrender.com/post/${id}`);
         const postInfo = await response.json();
         setPostInfo(postInfo);
       } catch (error) {
@@ -31,7 +31,7 @@ const PostPage = () => {
 
   const deletePost = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/post/${id}`, {
+      const res = await fetch(`https://mernblog-api-2lf4.onrender.com/post/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -78,7 +78,7 @@ const PostPage = () => {
 
       <Row className="mb-4">
         <Image
-          src={`http://localhost:8080/${postInfo.postImg}`}
+          src={`https://mernblog-api-2lf4.onrender.com/${postInfo.postImg}`}
           alt=""
           fluid
           rounded

@@ -18,7 +18,7 @@ const NavBar = () => {
     // Verify User Profile
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("http://localhost:8080/profile", {
+        const response = await fetch("https://mernblog-api-2lf4.onrender.com/profile", {
           credentials: "include",
         });
         const userInfo = await response.json();
@@ -32,7 +32,7 @@ const NavBar = () => {
   }, [setUserInfo]);
 
   const logout = async () => {
-    await fetch("http://localhost:8080/logout", {
+    await fetch("https://mernblog-api-2lf4.onrender.com/logout", {
       credentials: "include",
       method: "POST",
     });

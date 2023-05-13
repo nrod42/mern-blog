@@ -10,7 +10,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:8080/posts");
+        const response = await fetch("https://mernblog-api-2lf4.onrender.com/posts");
         const posts = await response.json();
         setPosts(posts);
       } catch (error) {

@@ -12,7 +12,7 @@ const ResultsPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/results/${query}`);
+        const response = await fetch(`https://mernblog-api-2lf4.onrender.com/results/${query}`);
         const results = await response.json();
         setResults(results);
       } catch (error) {
