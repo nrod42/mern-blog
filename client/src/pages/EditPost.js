@@ -4,6 +4,7 @@ import ReactQuillEditor from "../components/ReactQuillEditor";
 import "react-quill/dist/quill.snow.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { API_URL } from "../apiConfig";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const EditPost = () => {
   useEffect(() => {
     const fetchPostInfo = async () => {
       try {
-        const response = await fetch(`https://mernblog-api-2lf4.onrender.com/post/${id}`);
+        const response = await fetch(`${API_URL}/post/${id}`);
         const postInfo = await response.json();
         setPostTitle(postInfo.postTitle);
         setPostSummary(postInfo.postSummary);
@@ -41,7 +42,7 @@ const EditPost = () => {
       data.set("postImg", postImg?.[0]);
     }
 
-    const res = await fetch(`https://mernblog-api-2lf4.onrender.com/post/${id}`, {
+    const res = await fetch(`${API_URL}/post/${id}`, {
       method: "PUT",
       body: data,
       credentials: "include",

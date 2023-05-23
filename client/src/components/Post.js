@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
+import { API_URL } from "../apiConfig";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
@@ -11,7 +12,7 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
       <Col md={6}>
         <Link to={`/post/${_id}`}>
           <Image
-            src={`https://mernblog-api-2lf4.onrender.com/${postImg}`}
+            src={`${API_URL}/${postImg}`}
             alt=""
             fluid
             rounded
@@ -26,7 +27,9 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
         </Row>
         <Row className="d-flex align-items-center">
           <p className="text-muted">
-            <span className="fw-bold">{author.username}</span>
+            <Link to={`/user/${author._id}`} className={"postLink"}>
+              <span className="fw-bold">{author.username}</span>
+            </Link>
             {" - "}
             <span>{format(new Date(createdAt), "MMM d, yyyy h:mm a")}</span>
           </p>

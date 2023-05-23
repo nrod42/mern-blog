@@ -14,7 +14,7 @@ const PostSchema = new Schema(
   }
 );
 
-PostSchema.index({ postTitle: "text", postContent: "text" });
+PostSchema.index({ postTitle: "text", postSummary: "text", postContent: "text" });
 
 const PostModel = model("Post", PostSchema);
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Post from "../components/Post";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { API_URL } from "../apiConfig";
 import uniqid from "uniqid";
 import { useParams } from "react-router-dom";
 
@@ -12,7 +13,7 @@ const ResultsPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch(`https://mernblog-api-2lf4.onrender.com/results/${query}`);
+        const response = await fetch(`${API_URL}/results/${query}`);
         const results = await response.json();
         setResults(results);
       } catch (error) {

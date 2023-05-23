@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../apiConfig";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ReactQuillEditor from "../components/ReactQuillEditor";
@@ -20,7 +21,7 @@ const Create = () => {
     data.set("postSummary", postSummary);
     data.set("postContent", postContent);
     data.set("postImg", postImg[0]);
-    await fetch("https://mernblog-api-2lf4.onrender.com/create", {
+    await fetch(`${API_URL}/create`, {
       method: "POST",
       body: data,
       credentials: "include",

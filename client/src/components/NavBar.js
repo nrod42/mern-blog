@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { UserContext } from "../UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../apiConfig";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -18,7 +19,7 @@ const NavBar = () => {
     // Verify User Profile
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("https://mernblog-api-2lf4.onrender.com/profile", {
+        const response = await fetch(`${API_URL}/profile`, {
           credentials: "include",
         });
         const userInfo = await response.json();
@@ -32,7 +33,7 @@ const NavBar = () => {
   }, [setUserInfo]);
 
   const logout = async () => {
-    await fetch("https://mernblog-api-2lf4.onrender.com/logout", {
+    await fetch(`${API_URL}/logout`, {
       credentials: "include",
       method: "POST",
     });

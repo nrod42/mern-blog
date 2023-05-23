@@ -81,6 +81,13 @@ router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
       postImg: newImgPath,
       author: info.id,
     });
+    
+    // Update the user's posts array
+    await User.updateOne(
+      { _id: info.id },
+      { $push: { posts: postDoc._id } }
+    );
+
     res.json(postDoc);
   });
 });
@@ -90,6 +97,13 @@ router.get("/post/:id", async (req, res) => {
   const postDoc = await Post.findById(id).populate("author", ["username"]);
   res.json(postDoc);
 });
+
+router.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  const userInfo = await User.findById(id).populate("posts");
+  res.json(userInfo)
+  
+})
 
 router.put(
   "/post/:id",
@@ -142,8 +156,6 @@ router.delete("/post/:id", async (req, res) => {
   res.sendStatus(204);
 });
 
-module.exports = router;
-
 router.get("/results/:query", async (req, res) => {
   const { query } = req.params;
   const results = await Post.find(
@@ -154,3 +166,5 @@ router.get("/results/:query", async (req, res) => {
     .sort({ score: { $meta: "textScore" } });
   res.json(results);
 });
+
+module.exports = router;

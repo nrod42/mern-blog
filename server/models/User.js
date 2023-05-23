@@ -1,15 +1,20 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema({
-  email: { type: String, required: true },
-  username: {
-    type: String,
-    required: true,
-  },
+const UserSchema = new Schema(
+  {
+  email: String,
+  username: { type: String, required: true },
   password: { type: String, required: true },
-  date: { type: Date },
-});
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  about: String,
+  profileImg: String,
+  posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+  },
+  {
+    timestamps: true,
+  });
 
 const UserModel = model("User", UserSchema);
 

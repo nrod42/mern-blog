@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
+import { API_URL } from "../apiConfig";
 import DOMPurify from "dompurify";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -18,7 +19,7 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPostInfo = async () => {
       try {
-        const response = await fetch(`https://mernblog-api-2lf4.onrender.com/post/${id}`);
+        const response = await fetch(`${API_URL}/post/${id}`);
         const postInfo = await response.json();
         setPostInfo(postInfo);
       } catch (error) {
@@ -31,7 +32,7 @@ const PostPage = () => {
 
   const deletePost = async () => {
     try {
-      const res = await fetch(`https://mernblog-api-2lf4.onrender.com/post/${id}`, {
+      const res = await fetch(`${API_URL}/post/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -52,7 +53,7 @@ const PostPage = () => {
           <h1>{postInfo.postTitle}</h1>
           <div className="d-flex justify-content-center">
             <p className="text-muted">
-              <span className="fw-bold">{postInfo.author.username}</span>
+            <Link to={`/user/${postInfo.author._id}`} className={"postLink"}><span className="fw-bold">{postInfo.author.username}</span></Link>
               {" - "}
               <span>
                 {format(new Date(postInfo.createdAt), "MMM d, yyyy h:mm a")}
@@ -78,7 +79,7 @@ const PostPage = () => {
 
       <Row className="mb-4">
         <Image
-          src={`https://mernblog-api-2lf4.onrender.com/${postInfo.postImg}`}
+          src={`${API_URL}/${postInfo.postImg}`}
           alt=""
           fluid
           rounded
