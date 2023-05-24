@@ -37,6 +37,7 @@ const NavBar = () => {
       credentials: "include",
       method: "POST",
     });
+    navigate("/");
     setUserInfo(null);
   };
 

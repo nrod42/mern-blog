@@ -22,18 +22,19 @@ router.get("/posts", async function (req, res) {
 });
 
 router.post("/register", async function (req, res) {
-  const { email, username, password } = req.body;
+  const { email, username, password, firstName, lastName } = req.body;
 
   try {
     const userDoc = await User.create({
       email,
       username,
       password: bcrypt.hashSync(password, salt),
-      date: new Date().toLocaleString("en-US"),
+      firstName,
+      lastName,
     });
     res.json(userDoc);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(409).json(err);
   }
 });
 
@@ -63,6 +64,42 @@ router.get("/profile", (req, res) => {
   });
 });
 
+router.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  const userInfo = await User.findById(id).populate("posts");
+  res.json(userInfo);
+});
+
+router.put(
+  "/user/:id",
+  // uploadMiddleware.single("postImg"),
+  async (req, res) => {
+    const { id } = req.params;
+
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+      const { email, username, password, firstName, lastName } = req.body;
+      const userInfo = await User.findById(id);
+      const isUser = JSON.stringify(userInfo._id) === JSON.stringify(info.id);
+      if (!isUser) {
+        return res.status(400).json("You are NOT the user");
+      }
+      await User.updateOne(
+        { _id: id },
+        {
+          email,
+          username,
+          password,
+          firstName,
+          lastName,
+        }
+      );
+      res.json(postDoc);
+    });
+  }
+);
+
 router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
@@ -81,12 +118,9 @@ router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
       postImg: newImgPath,
       author: info.id,
     });
-    
+
     // Update the user's posts array
-    await User.updateOne(
-      { _id: info.id },
-      { $push: { posts: postDoc._id } }
-    );
+    await User.updateOne({ _id: info.id }, { $push: { posts: postDoc._id } });
 
     res.json(postDoc);
   });
@@ -97,13 +131,6 @@ router.get("/post/:id", async (req, res) => {
   const postDoc = await Post.findById(id).populate("author", ["username"]);
   res.json(postDoc);
 });
-
-router.get("/user/:id", async (req, res) => {
-  const { id } = req.params;
-  const userInfo = await User.findById(id).populate("posts");
-  res.json(userInfo)
-  
-})
 
 router.put(
   "/post/:id",

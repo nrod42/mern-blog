@@ -25,7 +25,7 @@ const Home = () => {
   return (
     <Col className="d-flex flex-column gap-4">
       <Row>
-        <h1 className="d-flex justify-content-center">BLOG SITE</h1>
+        <h2 className="d-flex justify-content-center">Main Feed</h2>
       </Row>
       {posts.map((post) => (
         <Row key={uniqid()}>
