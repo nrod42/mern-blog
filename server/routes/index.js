@@ -79,23 +79,23 @@ router.put(
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) throw err;
-      const { email, username, password, firstName, lastName } = req.body;
+      // console.log(req.body);
+      const { firstName, lastName, about } = req.body;
       const userInfo = await User.findById(id);
-      const isUser = JSON.stringify(userInfo._id) === JSON.stringify(info.id);
+      const isUser = JSON.stringify(userInfo.id) === JSON.stringify(info.id);
       if (!isUser) {
         return res.status(400).json("You are NOT the user");
       }
       await User.updateOne(
         { _id: id },
         {
-          email,
-          username,
-          password,
           firstName,
           lastName,
+          about,
         }
       );
-      res.json(postDoc);
+
+      res.json(userInfo);
     });
   }
 );
