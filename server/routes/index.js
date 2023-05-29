@@ -34,7 +34,7 @@ router.post("/register", async function (req, res) {
     });
     res.json(userDoc);
   } catch (err) {
-    res.status(409).json(err);
+    res.status(400).json(err);
   }
 });
 
@@ -42,9 +42,10 @@ router.post("/login", async function (req, res) {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
   const passOk = bcrypt.compareSync(password, userDoc.password);
+  const expiresIn = '1d';
 
   if (passOk) {
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+    jwt.sign({ username, id: userDoc._id }, secret, { expiresIn }, (err, token) => {
       if (err) throw err;
       res.cookie("token", token).json({
         id: userDoc._id,
@@ -59,28 +60,43 @@ router.post("/login", async function (req, res) {
 router.get("/profile", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw err;
+    if (err) {
+      // If token is expired or invalid, clear the cookie
+      res.clearCookie("token");
+      return res.status(401).json("Unauthorized");
+    }
     res.json(info);
   });
 });
 
 router.get("/user/:id", async (req, res) => {
   const { id } = req.params;
-  const userInfo = await User.findById(id).populate("posts");
+  const userInfo = await User.findById(id).populate({
+    path: "posts",
+    options: { sort: { createdAt: -1 } },
+  });
   res.json(userInfo);
 });
 
 router.put(
   "/user/:id",
-  // uploadMiddleware.single("postImg"),
+  uploadMiddleware.single("profilePic"), 
   async (req, res) => {
     const { id } = req.params;
+    let newImgPath = null;
+    if (req.file) {
+      const { originalname, path } = req.file;
+      const parts = originalname.split(".");
+      const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
+      newImgPath = `${path}.${fileExt}`;
+      fs.renameSync(path, newImgPath);
+    }
 
+    
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) throw err;
-      // console.log(req.body);
-      const { firstName, lastName, about } = req.body;
+      const { firstName, lastName, email, about } = req.body;
       const userInfo = await User.findById(id);
       const isUser = JSON.stringify(userInfo.id) === JSON.stringify(info.id);
       if (!isUser) {
@@ -91,7 +107,9 @@ router.put(
         {
           firstName,
           lastName,
+          email,
           about,
+          profilePic: newImgPath ? newImgPath : userInfo.profilePic,
         }
       );
 

@@ -44,13 +44,12 @@ const UserPage = () => {
   return (
     <Col>
       <Row className="justify-content-center">
-        <Col xs={12} md={2} className="text-md-start text-center">
+        <Col xs={12} md={2} className="d-flex text-md-start text-center justify-content-center align-items-center" style={{backgroundColor: 'lightgrey', borderRadius: '5px'}}>
           <Image
-            src="https://media.gq.com/photos/56436afea3bd50211a99c42d/master/w_1600%2Cc_limit/obama-gq-1215-05.jpg"
+            src={`${API_URL}/${userInfo.profilePic ? userInfo.profilePic : 'uploads/default-user-pic.png'}`}
             alt=""
             fluid
             rounded
-            style={{ maxHeight: "200px", width: "auto" }}
           />
         </Col>
         <Col xs={12} md={8} className="text-md-start text-center">
@@ -69,18 +68,18 @@ const UserPage = () => {
             Member Since: {format(new Date(userInfo.createdAt), "MMM d, yyyy")}
           </p>
         </Col>
-        {loggedUserInfo.id === userInfo._id && (
+        {loggedUserInfo?.id === userInfo._id && (
           <Col xs={12} md={2} className="text-md-start text-center">
             <Button variant="dark" onClick={handleShow}>
               Edit
             </Button>
-            <Button
+            {/* <Button
               variant="danger"
               className="ms-2"
               // onClick={deleteUser}
             >
               Delete
-            </Button>
+            </Button> */}
           </Col>
         )}
       </Row>

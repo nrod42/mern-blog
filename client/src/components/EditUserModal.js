@@ -9,36 +9,35 @@ import { API_URL } from "../apiConfig";
 
 const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
   const { id } = useParams();
-  // const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState(userInfo.firstName);
   const [lastName, setLastName] = useState(userInfo.lastName);
+  const [email, setEmail] = useState(userInfo.email);
   const [about, setAbout] = useState(userInfo.about);
+  const [profilePic, setProfilePic] = useState(userInfo.profilePic);
 
   const updateUser = async (e) => {
     e.preventDefault();
-    // const data = new FormData();
-    const data = { firstName, lastName, about };
-    // data.set("email", email);
-    // data.set("firstName", firstName);
-    // data.set("lastName", lastName);
-    console.log(data);
+    const data = new FormData();
+    // const data = { firstName, lastName, email, about };
+    data.set("firstName", firstName);
+    data.set("lastName", lastName);
+    data.set("email", email);
+    data.set("about", about);
+    // data.set("profilePic", profilePic[0]);
     // data.set("id", id);
-    // if (postImg?.[0]) {
-    //   data.set("postImg", postImg?.[0]);
-    // }
+    if (profilePic?.[0]) {
+      data.set("profilePic", profilePic?.[0]);
+    }
 
     const res = await fetch(`${API_URL}/user/${id}`, {
       method: "PUT",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      body: data,
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
       credentials: "include",
     });
     if (res.ok) {
-      // await res.json();
-      // console.log(response);
-      // navigate(`/user/${id}`);
       setUpdateTimestamp(Date.now());
       handleClose();
     }
@@ -67,10 +66,19 @@ const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
           <Form.Group className="mb-3" controlId="formLastName">
             <Form.Label>Last Name</Form.Label>
             <Form.Control
-              // type="password"
               placeholder="Last Name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formEmail">
+            <Form.Label>E-Mail</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="E-Mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
 
@@ -79,6 +87,14 @@ const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
             <ReactQuillEditor
               value={about}
               onChange={(newAbout) => setAbout(newAbout)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="newProfilePic">
+            <Form.Label>Upload Image</Form.Label>
+            <Form.Control
+              type="file"
+              onChange={(e) => setProfilePic(e.target.files)}
             />
           </Form.Group>
         </Form>

@@ -1,8 +1,7 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import Container from "react-bootstrap/Container";
-import NavBar from "./components/NavBar";
 import React from "react";
+import { UserContextProvider } from "./UserContext";
 import { Route, Routes } from "react-router-dom";
+import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import Register from "./pages/Register";
@@ -11,7 +10,10 @@ import PostPage from "./pages/PostPage";
 import EditPost from "./pages/EditPost";
 import UserPage from "./pages/UserPage";
 import ResultsPage from "./pages/ResultsPage";
-import { UserContextProvider } from "./UserContext";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Container from "react-bootstrap/Container";
+
+
 
 function App() {
   return (
@@ -31,7 +33,7 @@ function App() {
           </Routes>
         </Container>
       </main>
-      <footer>NR</footer>
+      <footer className="text-center">&copy; {new Date().getFullYear()} - Nigel Rodriguez</footer>
     </UserContextProvider>
   );
 }

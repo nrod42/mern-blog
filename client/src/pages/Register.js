@@ -10,6 +10,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  
 
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ const Register = () => {
           password,
           firstName,
           lastName,
+          profilePic: "uploads/default-user-pic.png",
         }),
         headers: { "Content-Type": "application/json" },
       });

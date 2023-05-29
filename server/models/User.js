@@ -9,7 +9,7 @@ const UserSchema = new Schema(
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   about: String,
-  profileImg: String,
+  profilePic: String,
   posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
   },
   {

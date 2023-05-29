@@ -7,6 +7,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Cookies from "js-cookie";
 
 const NavBar = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
@@ -19,11 +20,21 @@ const NavBar = () => {
     // Verify User Profile
     const fetchUserProfile = async () => {
       try {
+        const token = Cookies.get("token");
+        if (!token) {
+          setUserInfo(null);
+          return; // Skip fetching the user profile if no token exists
+        }
+
         const response = await fetch(`${API_URL}/profile`, {
           credentials: "include",
         });
-        const userInfo = await response.json();
-        setUserInfo(userInfo);
+        if (response.ok) {
+          const userInfo = await response.json();
+          setUserInfo(userInfo);
+        } else {
+          setUserInfo(null);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -32,11 +43,8 @@ const NavBar = () => {
     fetchUserProfile();
   }, [setUserInfo]);
 
-  const logout = async () => {
-    await fetch(`${API_URL}/logout`, {
-      credentials: "include",
-      method: "POST",
-    });
+  const logout =  () => {
+    Cookies.remove('token');
     navigate("/");
     setUserInfo(null);
   };
@@ -71,10 +79,13 @@ const NavBar = () => {
           <Nav>
             {userInfo ? (
               <>
+                <Nav.Link onClick={logout}>Logout</Nav.Link>
                 <Nav.Link as={Link} to={"/create"}>
                   New Post
                 </Nav.Link>
-                <Nav.Link onClick={logout}>Logout</Nav.Link>
+                <Nav.Link as={Link} to={`/user/${userInfo.id}`}>
+                  Profile
+                </Nav.Link>
               </>
             ) : (
               <>
