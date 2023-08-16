@@ -8,15 +8,25 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import { ColorRing } from "react-loader-spinner";
+import ReactQuillEditor from "../components/ReactQuillEditor";
+
 
 const PostPage = () => {
-  const [postInfo, setPostInfo] = useState(null);
+  
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
+  const [postInfo, setPostInfo] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [comment, setComment] = useState("");
+
+  const { postTitle, author, postImg, postContent, createdAt } = postInfo;
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     const fetchPostInfo = async () => {
       try {
         const response = await fetch(`${API_URL}/post/${id}`);
@@ -24,6 +34,8 @@ const PostPage = () => {
         setPostInfo(postInfo);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -47,29 +59,41 @@ const PostPage = () => {
   if (!postInfo) return "";
 
   return (
+    loading ? (      
+    <div className="text-center mt-5 mb-5">
+      <ColorRing
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="blocks-loading"
+        wrapperStyle={{}}
+        wrapperClass="blocks-wrapper"
+        colors={["#198754", "#198754", "#198754", "#198754", "#198754"]}
+      />
+    </div>) : (
     <Col>
       <Row className="mb-2">
         <Col md={{ span: 8, offset: 2 }} className="text-center">
-          <h1>{postInfo.postTitle}</h1>
+          <h1>{postTitle}</h1>
           <div className="d-flex justify-content-center">
             <p className="text-muted">
-            <Link to={`/user/${postInfo.author._id}`} className={"postLink"}><span className="fw-bold">{postInfo.author.username}</span></Link>
+            <Link to={`/user/${author._id}`} className={"postLink"}><span className="fw-bold">{author.username}</span></Link>
               {" - "}
               <span>
-                {format(new Date(postInfo.createdAt), "MMM d, yyyy h:mm a")}
+                {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
               </span>
             </p>
           </div>
         </Col>
         <Col md="auto" className="ms-auto my-auto text-center">
           {/* If user is not logged in or if the current user isn't the post author, don't show buttons.*/}
-          {userInfo?.id === postInfo.author._id && (
+          {userInfo?.id === author._id && (
             <Link to={`/edit/${postInfo._id}`}>
               <Button variant="dark">Edit</Button>
             </Link>
           )}
 
-          {userInfo?.id === postInfo.author._id && (
+          {userInfo?.id === author._id && (
             <Button variant="danger" className="ms-2" onClick={deletePost}>
               Delete
             </Button>
@@ -79,7 +103,7 @@ const PostPage = () => {
 
       <Row className="mb-4">
         <Image
-          src={`${API_URL}/${postInfo.postImg}`}
+          src={`${API_URL}/${postImg}`}
           alt=""
           fluid
           rounded
@@ -92,12 +116,35 @@ const PostPage = () => {
           {/* Makes sure user inputted HTML is safe */}
           <div
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(postInfo.postContent),
+              __html: DOMPurify.sanitize(postContent),
             }}
           />
         </Col>
       </Row>
+
+      <Row>
+        {/* postInfo.comments.map() */}
+        <p>COMMENTS HERE</p>
+      </Row>
+
+      <Row>
+        {/* When submitted, use the post id, add this comment to the posts comment array  */}
+        <Form >
+          <Form.Group className="mb-3" controlId="postText">
+            <Form.Label>Comment</Form.Label>
+            <ReactQuillEditor
+              value={comment}
+              onChange={(newValue) => setComment(newValue)}
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Post
+          </Button>
+        </Form>
+      </Row>
+
     </Col>
+    )
   );
 };
 
