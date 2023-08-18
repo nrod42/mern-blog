@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 
-const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
+const Post = ({ _id, postTitle, postSummary, postAuthor, createdAt, postImg }) => {
   return (
     <Row className="post">
       <Col md={6}>
@@ -27,8 +27,8 @@ const Post = ({ _id, postTitle, postSummary, author, createdAt, postImg }) => {
         </Row>
         <Row className="d-flex align-items-center">
           <p className="text-muted">
-            <Link to={`/user/${author._id}`} className={"postLink"}>
-              <span className="fw-bold">{author.username}</span>
+            <Link to={`/user/${postAuthor?._id}`} className={"postLink"}>
+              <span className="fw-bold">{postAuthor?.username}</span>
             </Link>
             {" - "}
             <span>{format(new Date(createdAt), "MMM d, yyyy h:mm a")}</span>

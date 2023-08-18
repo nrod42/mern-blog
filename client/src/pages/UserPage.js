@@ -11,6 +11,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Post from "../components/Post";
+import Container from "react-bootstrap/Container";
 
 const UserPage = () => {
   const { userInfo: loggedUserInfo } = useContext(UserContext); // Get logged in user's info
@@ -42,9 +43,9 @@ const UserPage = () => {
   if (!userInfo) return "";
 
   return (
-    <Col>
+    <Container>
       <Row className="justify-content-center">
-        <Col xs={12} md={2} className="d-flex text-md-start text-center justify-content-center align-items-center" style={{backgroundColor: 'lightgrey', borderRadius: '5px'}}>
+        <Col xs={12} md={2} className="d-flex text-md-start text-center justify-content-center align-items-center">
           <Image
             src={`${API_URL}/${userInfo.profilePic ? userInfo.profilePic : 'uploads/default-user-pic.png'}`}
             alt=""
@@ -95,7 +96,7 @@ const UserPage = () => {
               <Col>
                 <Post
                   {...post}
-                  author={{ username: userInfo.username, _id: userInfo._id }}
+                  postAuthor={{ username: userInfo.username, _id: userInfo._id }}
                 />
               </Col>
             </Row>
@@ -115,7 +116,7 @@ const UserPage = () => {
         userInfo={userInfo}
         setUpdateTimestamp={setUpdateTimestamp}
       />
-    </Col>
+    </Container>
   );
 };
 

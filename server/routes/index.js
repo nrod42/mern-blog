@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
@@ -15,7 +16,7 @@ const secret = "fbehjfbeafhbhebfe";
 router.get("/posts", async function (req, res) {
   res.json(
     await Post.find()
-      .populate("author", ["username"])
+      .populate("postAuthor", ["username"])
       .sort({ createdAt: -1 })
       .limit(20)
   );
@@ -134,7 +135,7 @@ router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
       postSummary,
       postContent,
       postImg: newImgPath,
-      author: info.id,
+      postAuthor: info.id,
     });
 
     // Update the user's posts array
@@ -146,8 +147,78 @@ router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
 
 router.get("/post/:id", async (req, res) => {
   const { id } = req.params;
-  const postDoc = await Post.findById(id).populate("author", ["username"]);
+  try {
+    const postDoc = await Post.findById(id)
+      .populate("postAuthor", ["username"])
+      .populate({
+        path: "postComments",
+        populate: { path: "commentAuthor", select: "username" },
+      });
+
+    if (!postDoc) {
+      return res.status(404).json({ error: "Post not found." });
+    }
   res.json(postDoc);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({ error: "An error occurred while fetching the post." });
+  }
+});
+
+router.post("/post/:postId/comments", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { commentContent, userInfo } = req.body;
+
+    // Create a new comment
+    const comment = await Comment.create({
+      commentContent: commentContent,
+      commentAuthor: userInfo.id,
+      post: postId,
+    });
+
+    const updateResult = await Post.updateOne(
+      { _id: postId },
+      { $push: { postComments: comment._id } }
+    );
+    
+    if (updateResult.nModified === 0) {
+      return res.status(404).json({ error: "Post not found." });
+    }
+
+    res.json(updateResult);
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ error: "An error occurred while adding the comment." });
+  }
+});
+
+router.delete("/post/:postId/comments/:commentId", async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+
+    const comment = await Comment.findByIdAndDelete(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found." });
+    }
+
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found." });
+    }
+
+    await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { postComments: commentId } }
+    );
+
+    res.json({ message: "Comment deleted successfully.", post });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ error: "An error occurred while deleting the comment." });
+  }
 });
 
 router.put(
@@ -169,7 +240,7 @@ router.put(
       const { postTitle, postSummary, postContent } = req.body;
       const postDoc = await Post.findById(id);
       const isAuthor =
-        JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        JSON.stringify(postDoc.postAuthor) === JSON.stringify(info.id);
       if (!isAuthor) {
         return res.status(400).json("You are not the author!");
       }
@@ -207,7 +278,7 @@ router.get("/results/:query", async (req, res) => {
     { $text: { $search: query } },
     { score: { $meta: "textScore" } }
   )
-    .populate("author", ["username"])
+    .populate("postAuthor", ["username"])
     .sort({ score: { $meta: "textScore" } });
   res.json(results);
 });

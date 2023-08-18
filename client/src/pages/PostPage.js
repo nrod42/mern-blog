@@ -8,9 +8,10 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import { ColorRing } from "react-loader-spinner";
-import ReactQuillEditor from "../components/ReactQuillEditor";
+import PostCommentForm from "../components/PostCommentForm";
+import uniqid from 'uniqid';
+import PostComment from "../components/PostComment";
 
 
 const PostPage = () => {
@@ -19,28 +20,29 @@ const PostPage = () => {
   const { id } = useParams();
   const [postInfo, setPostInfo] = useState("");
   const [loading, setLoading] = useState(false);
-  const [comment, setComment] = useState("");
+  const [commentsUpdated, setCommentsUpdated] = useState(false);
 
-  const { postTitle, author, postImg, postContent, createdAt } = postInfo;
+  const { postTitle, postAuthor, postImg, postContent, postComments, createdAt } = postInfo;
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoading(true);
-    const fetchPostInfo = async () => {
-      try {
-        const response = await fetch(`${API_URL}/post/${id}`);
-        const postInfo = await response.json();
-        setPostInfo(postInfo);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false)
-      }
-    };
 
-    fetchPostInfo();
-  }, [id]);
+
+  const fetchPostInfo = async () => {
+    try {
+      const response = await fetch(`${API_URL}/post/${id}`);
+      const postInfo = await response.json();
+      setPostInfo(postInfo);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  const handleCommentsUpdated = () => {
+    setCommentsUpdated(true);
+  };
 
   const deletePost = async () => {
     try {
@@ -55,6 +57,21 @@ const PostPage = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchPostInfo();
+  }, [id]);
+
+  // Use useEffect to watch for changes in the commentsUpdated state
+  useEffect(() => {
+    if (commentsUpdated) {
+      // Fetch the updated post info here, you can reuse the fetchPostInfo function
+      fetchPostInfo();
+      // Reset the commentUpdated state
+      setCommentsUpdated(false);
+    }
+  }, [commentsUpdated]);
 
   if (!postInfo) return "";
 
@@ -73,27 +90,32 @@ const PostPage = () => {
     </div>) : (
     <Col>
       <Row className="mb-2">
-        <Col md={{ span: 8, offset: 2 }} className="text-center">
+        <Col className="text-center">
           <h1>{postTitle}</h1>
           <div className="d-flex justify-content-center">
             <p className="text-muted">
-            <Link to={`/user/${author._id}`} className={"postLink"}><span className="fw-bold">{author.username}</span></Link>
+              <Link to={`/user/${postAuthor?._id}`} className={"postLink"}>
+                <span className="fw-bold">
+                  {postAuthor?.username}
+                </span>
+              </Link>
               {" - "}
               <span>
                 {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
               </span>
+              <Button variant="success">Follow</Button>
             </p>
           </div>
         </Col>
         <Col md="auto" className="ms-auto my-auto text-center">
           {/* If user is not logged in or if the current user isn't the post author, don't show buttons.*/}
-          {userInfo?.id === author._id && (
+          {userInfo?.id === postAuthor?._id && (
             <Link to={`/edit/${postInfo._id}`}>
               <Button variant="dark">Edit</Button>
             </Link>
           )}
 
-          {userInfo?.id === author._id && (
+          {userInfo?.id === postAuthor?._id && (
             <Button variant="danger" className="ms-2" onClick={deletePost}>
               Delete
             </Button>
@@ -123,24 +145,14 @@ const PostPage = () => {
       </Row>
 
       <Row>
-        {/* postInfo.comments.map() */}
-        <p>COMMENTS HERE</p>
+        {/* When submitted, use the post id, add this comment to the posts comment array  */}
+        <PostCommentForm handleCommentsUpdated={handleCommentsUpdated}/>
       </Row>
 
-      <Row>
-        {/* When submitted, use the post id, add this comment to the posts comment array  */}
-        <Form >
-          <Form.Group className="mb-3" controlId="postText">
-            <Form.Label>Comment</Form.Label>
-            <ReactQuillEditor
-              value={comment}
-              onChange={(newValue) => setComment(newValue)}
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Post
-          </Button>
-        </Form>
+      <Row className="mb-5 gap-3">
+        {postComments?.map((comment) => (
+          <PostComment key={uniqid()} comment={comment} handleCommentsUpdated={handleCommentsUpdated}/>
+        ))}
       </Row>
 
     </Col>
