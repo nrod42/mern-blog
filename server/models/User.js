@@ -11,6 +11,7 @@ const UserSchema = new Schema(
   about: String,
   profilePic: String,
   posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+  follows: [{ type: Schema.Types.ObjectId, ref: "User" }]
   },
   {
     timestamps: true,

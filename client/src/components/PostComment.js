@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import DOMPurify from "dompurify";
 import { format } from "date-fns";
 import { API_URL } from "../apiConfig";
 import Button from "react-bootstrap/Button";
+import { UserContext } from "../UserContext";
 
 const PostComment = ({comment, handleCommentsUpdated}) => {
-    const { _id, post, commentAuthor,commentContent, createdAt } = comment;
+    const { _id, post, commentAuthor, commentContent, createdAt } = comment;
+    const { userInfo } = useContext(UserContext)
 
     const deleteComment = async () => {
         try {
@@ -13,7 +15,7 @@ const PostComment = ({comment, handleCommentsUpdated}) => {
                 method: "DELETE",
                 credentials: "include",
             });
-    
+
             if (!response.ok) {
                 if (response.status === 404) {
                     console.error("Comment not found.");
@@ -29,7 +31,7 @@ const PostComment = ({comment, handleCommentsUpdated}) => {
             console.error("Network error:", error);
         }
     }
-    
+
     return (
         <div> 
             <p className="fw-bold">{commentAuthor.username}</p>
@@ -39,7 +41,7 @@ const PostComment = ({comment, handleCommentsUpdated}) => {
                 }}
             />
             <p className="text-muted">{format(new Date(createdAt), "MMMM d, yyyy h:mm a")}</p>
-            <Button variant="danger" onClick={deleteComment}>Delete</Button>
+            {userInfo.id === commentAuthor._id ? (<Button variant="danger" onClick={deleteComment}>Delete</Button>) : null}
         </div>
     )
 }  

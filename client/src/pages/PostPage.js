@@ -13,7 +13,6 @@ import PostCommentForm from "../components/PostCommentForm";
 import uniqid from 'uniqid';
 import PostComment from "../components/PostComment";
 
-
 const PostPage = () => {
   
   const { userInfo } = useContext(UserContext);
@@ -25,9 +24,7 @@ const PostPage = () => {
   const { postTitle, postAuthor, postImg, postContent, postComments, createdAt } = postInfo;
 
   const navigate = useNavigate();
-
-
-
+  
   const fetchPostInfo = async () => {
     try {
       const response = await fetch(`${API_URL}/post/${id}`);
@@ -57,6 +54,33 @@ const PostPage = () => {
       console.error(error);
     }
   };
+
+  const followUser = async () => {
+    try {
+      const res = await fetch(`${API_URL}/user/${postAuthor?._id}/follow`, {
+        method: "POST",
+        body: JSON.stringify({ loggedInUserId: userInfo?.id }), // Convert to JSON string
+        headers: {
+          "Content-Type": "application/json", // Specify the content type
+        },
+        credentials: "include",
+      });
+      
+      if (!res.ok) {
+        // Handle the response error here if needed
+        console.error("Error following user:", res.status, res.statusText);
+        // Handle error display to the user, e.g., show an error message on the UI
+      } else {
+        // Handle the successful follow action if needed
+        console.log("User followed successfully");
+        // Update the UI to reflect the user is now following
+      }
+    } catch (error) {
+      console.error("Error following user:", error);
+      // Handle error display to the user, e.g., show an error message on the UI
+    }
+  };
+  
 
   useEffect(() => {
     setLoading(true);
@@ -103,7 +127,7 @@ const PostPage = () => {
               <span>
                 {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
               </span>
-              <Button variant="success">Follow</Button>
+              <Button variant="success" onClick={followUser}>Follow</Button>
             </p>
           </div>
         </Col>

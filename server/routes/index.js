@@ -12,8 +12,9 @@ const fs = require("fs");
 const salt = bcrypt.genSaltSync(10);
 const secret = "fbehjfbeafhbhebfe";
 
-/* GET home page. */
+// Get home page
 router.get("/posts", async function (req, res) {
+  // Fetch posts with author's username, sort by createdAt, and limit to 20
   res.json(
     await Post.find()
       .populate("postAuthor", ["username"])
@@ -22,6 +23,27 @@ router.get("/posts", async function (req, res) {
   );
 });
 
+router.get("/posts/:loggedInUserId/following", async (req, res) => {
+  try {
+    const {loggedInUserId} = req.params;
+    if (!loggedInUserId) {
+      return
+    }
+    const loggedInUser = await User.findById(loggedInUserId).select("follows");
+    const posts = await Post.find({ postAuthor: { $in: loggedInUser.follows } })
+      .populate("postAuthor", ["username"])
+      .sort({ createdAt: -1 })
+      .limit(20);
+    console.log(posts)
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching following posts:", error);
+    res.status(500).json({ error: "An error occurred while fetching following posts." });
+  }
+});
+
+
+// Register a new user
 router.post("/register", async function (req, res) {
   const { email, username, password, firstName, lastName } = req.body;
 
@@ -39,6 +61,7 @@ router.post("/register", async function (req, res) {
   }
 });
 
+// User login
 router.post("/login", async function (req, res) {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
@@ -58,6 +81,7 @@ router.post("/login", async function (req, res) {
   }
 });
 
+// Get user profile
 router.get("/profile", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
@@ -70,6 +94,7 @@ router.get("/profile", (req, res) => {
   });
 });
 
+// Get user information
 router.get("/user/:id", async (req, res) => {
   const { id } = req.params;
   const userInfo = await User.findById(id).populate({
@@ -79,21 +104,22 @@ router.get("/user/:id", async (req, res) => {
   res.json(userInfo);
 });
 
+// Update user information
 router.put(
   "/user/:id",
-  uploadMiddleware.single("profilePic"), 
+  uploadMiddleware.single("profilePic"),
   async (req, res) => {
     const { id } = req.params;
     let newImgPath = null;
     if (req.file) {
+      // Rename and update profile picture if provided
       const { originalname, path } = req.file;
       const parts = originalname.split(".");
-      const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
+      const fileExt = parts[parts.length - 1];
       newImgPath = `${path}.${fileExt}`;
       fs.renameSync(path, newImgPath);
     }
 
-    
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) throw err;
@@ -119,10 +145,42 @@ router.put(
   }
 );
 
+// Follow a user
+router.post('/user/:userId/follow', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { loggedInUserId } = req.body; // You can pass the logged-in user's ID in the request body
+
+    const user = await User.findById(userId);
+    const loggedInUser = await User.findById(loggedInUserId);
+
+    if (!user || !loggedInUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Check if the logged-in user is already following the target user
+    if (loggedInUser.follows.includes(userId)) {
+      return res.status(400).json({ error: "User is already following." });
+    }
+
+    // Update the logged-in user's follows array using updateOne
+    await User.updateOne(
+      { _id: loggedInUserId },
+      { $push: { follows: userId } }
+    );
+
+    res.json({ message: "User followed successfully." });
+  } catch (error) {
+      console.error("Error following user:", error);
+      res.status(500).json({ error: "An error occurred while following the user." });
+  }
+});
+
+// Create a new post
 router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
-  const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
+  const fileExt = parts[parts.length - 1];
   const newImgPath = `${path}.${fileExt}`;
   fs.renameSync(path, newImgPath);
 
@@ -145,6 +203,7 @@ router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
   });
 });
 
+// Get a specific post
 router.get("/post/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -158,13 +217,14 @@ router.get("/post/:id", async (req, res) => {
     if (!postDoc) {
       return res.status(404).json({ error: "Post not found." });
     }
-  res.json(postDoc);
+    res.json(postDoc);
   } catch (error) {
     console.error("Error fetching post:", error);
     res.status(500).json({ error: "An error occurred while fetching the post." });
   }
 });
 
+// Add a new comment to a post
 router.post("/post/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -181,7 +241,7 @@ router.post("/post/:postId/comments", async (req, res) => {
       { _id: postId },
       { $push: { postComments: comment._id } }
     );
-    
+
     if (updateResult.nModified === 0) {
       return res.status(404).json({ error: "Post not found." });
     }
@@ -193,18 +253,17 @@ router.post("/post/:postId/comments", async (req, res) => {
   }
 });
 
+// Delete a comment
 router.delete("/post/:postId/comments/:commentId", async (req, res) => {
   try {
     const { postId, commentId } = req.params;
 
     const comment = await Comment.findByIdAndDelete(commentId);
-
     if (!comment) {
       return res.status(404).json({ error: "Comment not found." });
     }
 
     const post = await Post.findById(postId);
-
     if (!post) {
       return res.status(404).json({ error: "Post not found." });
     }
@@ -221,6 +280,7 @@ router.delete("/post/:postId/comments/:commentId", async (req, res) => {
   }
 });
 
+// Update a post
 router.put(
   "/post/:id",
   uploadMiddleware.single("postImg"),
@@ -230,7 +290,7 @@ router.put(
     if (req.file) {
       const { originalname, path } = req.file;
       const parts = originalname.split(".");
-      const fileExt = parts[parts.length - 1]; //in case there are multiple '.',the extension will be the last one
+      const fileExt = parts[parts.length - 1];
       newImgPath = `${path}.${fileExt}`;
       fs.renameSync(path, newImgPath);
     }
@@ -258,6 +318,7 @@ router.put(
   }
 );
 
+// Delete a post
 router.delete("/post/:id", async (req, res) => {
   const { id } = req.params;
   const postDoc = await Post.findById(id);
@@ -272,6 +333,7 @@ router.delete("/post/:id", async (req, res) => {
   res.sendStatus(204);
 });
 
+// Search posts by query
 router.get("/results/:query", async (req, res) => {
   const { query } = req.params;
   const results = await Post.find(
