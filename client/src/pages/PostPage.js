@@ -14,17 +14,18 @@ import uniqid from 'uniqid';
 import PostComment from "../components/PostComment";
 
 const PostPage = () => {
-  
+  // Get the user's information from the context
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
   const [postInfo, setPostInfo] = useState("");
   const [loading, setLoading] = useState(false);
-  const [commentsUpdated, setCommentsUpdated] = useState(false);
-
-  const { postTitle, postAuthor, postImg, postContent, postComments, createdAt } = postInfo;
+  const [update, setUpdate] = useState(false);
+  const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
 
   const navigate = useNavigate();
-  
+
+  const { postTitle, postAuthor, postImg, postContent, postComments, createdAt, updatedAt } = postInfo;
+  // Fetch post information from the API
   const fetchPostInfo = async () => {
     try {
       const response = await fetch(`${API_URL}/post/${id}`);
@@ -33,14 +34,26 @@ const PostPage = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
-  const handleCommentsUpdated = () => {
-    setCommentsUpdated(true);
+  const handleUpdate = () => {
+    setUpdate(true);
   };
 
+  // Check if the logged-in user is following the post author
+  const checkFollowingStatus = async () => {
+    try {
+      const userResponse = await fetch(`${API_URL}/user/${userInfo.id}`);
+      const userData = await userResponse.json();
+      setIsFollowingAuthor(userData.follows.includes(postAuthor._id));
+    } catch (error) {
+      console.error("Error checking following status:", error);
+    }
+  };
+
+  // Delete the current post
   const deletePost = async () => {
     try {
       const res = await fetch(`${API_URL}/post/${id}`, {
@@ -55,63 +68,67 @@ const PostPage = () => {
     }
   };
 
-  const followUser = async () => {
+  const toggleFollowUser = async () => {
     try {
-      const res = await fetch(`${API_URL}/user/${postAuthor?._id}/follow`, {
-        method: "POST",
-        body: JSON.stringify({ loggedInUserId: userInfo?.id }), // Convert to JSON string
+      const endpoint = isFollowingAuthor
+        ? `unfollow`
+        : `follow`;
+  
+      const res = await fetch(`${API_URL}/user/${postAuthor?._id}/${endpoint}`, {
+        method: isFollowingAuthor ? "DELETE" : "POST",
+        body: JSON.stringify({ loggedInUserId: userInfo?.id }),
         headers: {
-          "Content-Type": "application/json", // Specify the content type
+          "Content-Type": "application/json",
         },
         credentials: "include",
       });
-      
-      if (!res.ok) {
-        // Handle the response error here if needed
-        console.error("Error following user:", res.status, res.statusText);
-        // Handle error display to the user, e.g., show an error message on the UI
+  
+      if (res.ok) {
+        setUpdate(true);
       } else {
-        // Handle the successful follow action if needed
-        console.log("User followed successfully");
-        // Update the UI to reflect the user is now following
+        console.error(`Error ${isFollowingAuthor ? "un" : ""}following user:`, res.status, res.statusText);
       }
     } catch (error) {
-      console.error("Error following user:", error);
-      // Handle error display to the user, e.g., show an error message on the UI
+      console.error(`Error ${isFollowingAuthor ? "un" : ""}following user:`, error);
     }
   };
   
-
   useEffect(() => {
     setLoading(true);
     fetchPostInfo();
-  }, [id]);
+  }, [id, userInfo]);
 
-  // Use useEffect to watch for changes in the commentsUpdated state
   useEffect(() => {
-    if (commentsUpdated) {
-      // Fetch the updated post info here, you can reuse the fetchPostInfo function
-      fetchPostInfo();
-      // Reset the commentUpdated state
-      setCommentsUpdated(false);
+    if (userInfo && postAuthor) {
+      checkFollowingStatus();
     }
-  }, [commentsUpdated]);
+  }, [userInfo, postAuthor]);
+
+  useEffect(() => {
+    if (update) {
+      fetchPostInfo();
+      setUpdate(false);
+    }
+  }, [update]);
 
   if (!postInfo) return "";
 
+  // Return loading spinner if postInfo is not available
   return (
-    loading ? (      
-    <div className="text-center mt-5 mb-5">
-      <ColorRing
-        visible={true}
-        height="80"
-        width="80"
-        ariaLabel="blocks-loading"
-        wrapperStyle={{}}
-        wrapperClass="blocks-wrapper"
-        colors={["#198754", "#198754", "#198754", "#198754", "#198754"]}
-      />
-    </div>) : (
+    loading ?  
+    (
+      <div className="text-center mt-5 mb-5">
+        <ColorRing
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="blocks-loading"
+          wrapperStyle={{}}
+          wrapperClass="blocks-wrapper"
+          colors={["#198754", "#198754", "#198754", "#198754", "#198754"]}
+        />
+      </div>
+    ) : (
     <Col>
       <Row className="mb-2">
         <Col className="text-center">
@@ -127,18 +144,32 @@ const PostPage = () => {
               <span>
                 {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
               </span>
-              <Button variant="success" onClick={followUser}>Follow</Button>
+
+
+              <Button
+                className={isFollowingAuthor ? "following-button" : ""}
+                variant={isFollowingAuthor ? "dark" : "success"}
+                onClick={toggleFollowUser}
+              >
+                {isFollowingAuthor ? "Following" : "Follow"}
+              </Button>
             </p>
           </div>
+          <p>              
+            <span className="text-muted">
+                last updated: {format(new Date(updatedAt), "MMM d, yyyy h:mm a")}
+            </span>
+          </p>
         </Col>
+
+        {/* Render post author options */}
         <Col md="auto" className="ms-auto my-auto text-center">
-          {/* If user is not logged in or if the current user isn't the post author, don't show buttons.*/}
+          {/* Show edit and delete buttons for post author */}
           {userInfo?.id === postAuthor?._id && (
             <Link to={`/edit/${postInfo._id}`}>
               <Button variant="dark">Edit</Button>
             </Link>
           )}
-
           {userInfo?.id === postAuthor?._id && (
             <Button variant="danger" className="ms-2" onClick={deletePost}>
               Delete
@@ -147,6 +178,7 @@ const PostPage = () => {
         </Col>
       </Row>
 
+      {/* Render post image */}
       <Row className="mb-4">
         <Image
           src={`${API_URL}/${postImg}`}
@@ -157,31 +189,28 @@ const PostPage = () => {
         />
       </Row>
 
+      {/* Render post content */}
       <Row>
-        <Col>
-          {/* Makes sure user inputted HTML is safe */}
-          <div
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(postContent),
-            }}
-          />
-        </Col>
+        <Col
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(postContent),
+          }}
+        />
+     </Row>
+
+      {/* Render comment form */}
+      <Row>
+        <PostCommentForm handleUpdate={handleUpdate}/>
       </Row>
 
-      <Row>
-        {/* When submitted, use the post id, add this comment to the posts comment array  */}
-        <PostCommentForm handleCommentsUpdated={handleCommentsUpdated}/>
-      </Row>
-
+      {/* Render post comments */}
       <Row className="mb-5 gap-3">
         {postComments?.map((comment) => (
-          <PostComment key={uniqid()} comment={comment} handleCommentsUpdated={handleCommentsUpdated}/>
+          <PostComment key={uniqid()} comment={comment} handleUpdate={handleUpdate}/>
         ))}
       </Row>
-
     </Col>
-    )
-  );
+  ));
 };
 
 export default PostPage;

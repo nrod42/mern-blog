@@ -4,8 +4,9 @@ import { format } from "date-fns";
 import { API_URL } from "../apiConfig";
 import Button from "react-bootstrap/Button";
 import { UserContext } from "../UserContext";
+import { Link } from "react-router-dom";
 
-const PostComment = ({comment, handleCommentsUpdated}) => {
+const PostComment = ({comment, handleUpdate}) => {
     const { _id, post, commentAuthor, commentContent, createdAt } = comment;
     const { userInfo } = useContext(UserContext)
 
@@ -26,7 +27,7 @@ const PostComment = ({comment, handleCommentsUpdated}) => {
                 }
             };
 
-            handleCommentsUpdated();
+            handleUpdate();
         } catch (error) {
             console.error("Network error:", error);
         }
@@ -34,7 +35,7 @@ const PostComment = ({comment, handleCommentsUpdated}) => {
 
     return (
         <div> 
-            <p className="fw-bold">{commentAuthor.username}</p>
+            <p className="fw-bold"><Link to={`/user/${commentAuthor._id}`}>{commentAuthor.username}</Link></p>
             <p
                 dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(commentContent),

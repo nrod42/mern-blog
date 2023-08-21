@@ -6,7 +6,7 @@ import { API_URL } from "../apiConfig";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../UserContext";
 
-const PostCommentForm = ({handleCommentsUpdated}) => {
+const PostCommentForm = ({handleUpdate}) => {
 
 const { id } = useParams();
 const { userInfo } = useContext(UserContext);
@@ -27,7 +27,7 @@ const [commentContent, setCommentContent] = useState("");
             console.error('Error posting comment');
           } else {
             // Call the handleCommentAdded callback to trigger a re-render
-            handleCommentsUpdated();
+            handleUpdate();
             // Clear the comment input field
             setCommentContent("");
           }

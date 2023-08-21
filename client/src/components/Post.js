@@ -16,13 +16,14 @@ const Post = ({ _id, postTitle, postSummary, postAuthor, createdAt, postImg }) =
             alt=""
             fluid
             rounded
+            // style={{maxHeight: '200px'}}
           />
         </Link>
       </Col>
       <Col md={6} className="d-flex flex-column gap-2">
         <Row className="postInfo d-flex flex-column gap-2">
           <Link to={`/post/${_id}`} className={"postLink"}>
-            <h2>{postTitle}</h2>
+            <h3>{postTitle}</h3>
           </Link>
         </Row>
         <Row className="d-flex align-items-center">

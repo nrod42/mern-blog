@@ -58,7 +58,7 @@ const NavBar = () => {
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to={"/"}>
-          MERN Blog
+          Posted
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse className="justify-content-between">
@@ -72,7 +72,7 @@ const NavBar = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <Button type="submit" variant="outline-success">
+            <Button type="submit" variant="outline-warning">
               Search
             </Button>
           </Form>

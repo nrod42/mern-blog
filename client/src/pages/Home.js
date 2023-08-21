@@ -57,18 +57,18 @@ const Home = () => {
     ) : (
     <Col className="d-flex flex-column gap-4">
       <Row>
-        <h2 className="d-flex justify-content-center">HOME</h2>
+        <h2 className="d-flex justify-content-center">Posted? Logo</h2>
       </Row>
       <Row className="mb-4">
         <ButtonGroup>
           <Button
-            variant={activeTab === "main" ? "primary" : "outline-primary"}
+            variant={activeTab === "main" ? "dark" : "outline-dark"}
             onClick={() => setActiveTab("main")}
           >
             All
           </Button>
           {userInfo && (<Button
-            variant={activeTab === "following" ? "primary" : "outline-primary"}
+            variant={activeTab === "following" ? "dark" : "outline-dark"}
             onClick={() => setActiveTab("following")}
           >
             Following

@@ -18,13 +18,10 @@ const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
   const updateUser = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    // const data = { firstName, lastName, email, about };
     data.set("firstName", firstName);
     data.set("lastName", lastName);
     data.set("email", email);
     data.set("about", about);
-    // data.set("profilePic", profilePic[0]);
-    // data.set("id", id);
     if (profilePic?.[0]) {
       data.set("profilePic", profilePic?.[0]);
     }

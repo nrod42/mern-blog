@@ -44,78 +44,48 @@ const UserPage = () => {
 
   return (
     <Container>
-      <Row className="justify-content-center">
-        <Col xs={12} md={2} className="d-flex text-md-start text-center justify-content-center align-items-center">
+      <Row>
+        <Col xs={12} md={3} className="d-flex flex-column justify-content-start align-items-center">
           <Image
             src={`${API_URL}/${userInfo.profilePic ? userInfo.profilePic : 'uploads/default-user-pic.png'}`}
             alt=""
             fluid
             rounded
+            // style={{maxHeight: '200px'}}
           />
-        </Col>
-        <Col xs={12} md={8} className="text-md-start text-center">
-          <h2>@{userInfo.username}</h2>
+          <h3>@{userInfo.username}</h3>
           <p>{`${userInfo.firstName} ${userInfo.lastName}`}</p>
-          <div>
-            <strong>About Me:</strong>
-          </div>
+          <p className="fw-bold">About Me:</p>
           <p
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(userInfo.about),
             }}
           />
-
-          <p>
-            Member Since: {format(new Date(userInfo.createdAt), "MMM d, yyyy")}
-          </p>
-        </Col>
-        {loggedUserInfo?.id === userInfo._id && (
-          <Col xs={12} md={2} className="text-md-start text-center">
+          <p>Member Since: {format(new Date(userInfo.createdAt), "MMM d, yyyy")}</p>
+          {loggedUserInfo?.id === userInfo._id && (
             <Button variant="dark" onClick={handleShow}>
               Edit
             </Button>
-            {/* <Button
-              variant="danger"
-              className="ms-2"
-              // onClick={deleteUser}
-            >
-              Delete
-            </Button> */}
-          </Col>
-        )}
-      </Row>
-      <Row>
-        <Col className="d-flex flex-column align-items-center gap-4">
-          <Row>
-            <Col>
-              <h3>Posts By: {userInfo.username}</h3>
-            </Col>
-          </Row>
-          {userInfo.posts.map((post) => (
-            <Row key={uniqid()}>
-              <Col>
-                <Post
-                  {...post}
-                  postAuthor={{ username: userInfo.username, _id: userInfo._id }}
-                />
-              </Col>
-            </Row>
-          ))}
-
-          <Row>
-            <Col>
-              <Button variant="success">See All Posts</Button>
-            </Col>
-          </Row>
+          )}
         </Col>
+        <Col xs={12} md={9} className="d-flex flex-column gap-4">
+          <h3 className="text-center">Posts By: {userInfo.username}</h3>
+          {userInfo.posts.map((post) => (
+            <Post
+              key={uniqid()}
+              {...post}
+              postAuthor={{ username: userInfo.username, _id: userInfo._id }}
+            />
+          ))}
+          <div className="text-center"><Button variant="dark">See All Posts</Button></div>
+        </Col>
+        <EditUserModal
+          show={show}
+          handleClose={handleClose}
+          userInfo={userInfo}
+          setUpdateTimestamp={setUpdateTimestamp}
+        />
       </Row>
-
-      <EditUserModal
-        show={show}
-        handleClose={handleClose}
-        userInfo={userInfo}
-        setUpdateTimestamp={setUpdateTimestamp}
-      />
     </Container>
   );
 };

@@ -27,9 +27,9 @@ const ResultsPage = () => {
   return (
     <Col className="d-flex flex-column gap-4">
       <Row>
-        <h1 className="d-flex justify-content-center">
+        <h2 className="d-flex justify-content-center">
           Showing results for "{query}":
-        </h1>
+        </h2>
       </Row>
       {results.map((result) => (
         <Row key={uniqid()}>

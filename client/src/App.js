@@ -12,6 +12,7 @@ import UserPage from "./pages/UserPage";
 import ResultsPage from "./pages/ResultsPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
+import PostForm from "./pages/PostForm";
 
 
 
@@ -25,9 +26,11 @@ function App() {
             <Route index element={<Home />} />
             <Route path={"/login"} element={<LoginPage />} />
             <Route path={"/register"} element={<Register />} />
-            <Route path={"/create"} element={<CreatePost />} />
+            {/* <Route path={"/create"} element={<CreatePost />} /> */}
+            <Route path={"/create"} element={<PostForm isEditing={false} />} />
+            <Route path={"/edit/:id"} element={<PostForm isEditing={true}/>} />
             <Route path={"/post/:id"} element={<PostPage />} />
-            <Route path={"/edit/:id"} element={<EditPost />} />
+            {/* <Route path={"/edit/:id"} element={<EditPost />} /> */}
             <Route path={"/user/:id"} element={<UserPage />} />
             <Route path={"/results/:query"} element={<ResultsPage />} />
           </Routes>

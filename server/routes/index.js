@@ -19,7 +19,7 @@ router.get("/posts", async function (req, res) {
     await Post.find()
       .populate("postAuthor", ["username"])
       .sort({ createdAt: -1 })
-      .limit(20)
+
   );
 });
 
@@ -33,7 +33,7 @@ router.get("/posts/:loggedInUserId/following", async (req, res) => {
     const posts = await Post.find({ postAuthor: { $in: loggedInUser.follows } })
       .populate("postAuthor", ["username"])
       .sort({ createdAt: -1 })
-      .limit(20);
+
     console.log(posts)
     res.json(posts);
   } catch (error) {
@@ -41,6 +41,8 @@ router.get("/posts/:loggedInUserId/following", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching following posts." });
   }
 });
+
+
 
 
 // Register a new user
@@ -175,6 +177,38 @@ router.post('/user/:userId/follow', async (req, res) => {
       res.status(500).json({ error: "An error occurred while following the user." });
   }
 });
+
+// Unfollow a user
+router.delete('/user/:userId/unfollow', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { loggedInUserId } = req.body; // You can pass the logged-in user's ID in the request body
+
+    const user = await User.findById(userId);
+    const loggedInUser = await User.findById(loggedInUserId);
+
+    if (!user || !loggedInUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Check if the logged-in user is following the target user
+    if (!loggedInUser.follows.includes(userId)) {
+      return res.status(400).json({ error: "User is not following." });
+    }
+
+    // Update the logged-in user's follows array using updateOne
+    await User.updateOne(
+      { _id: loggedInUserId },
+      { $pull: { follows: userId } }
+    );
+
+    res.json({ message: "User unfollowed successfully." });
+  } catch (error) {
+    console.error("Error unfollowing user:", error);
+    res.status(500).json({ error: "An error occurred while unfollowing the user." });
+  }
+});
+
 
 // Create a new post
 router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {

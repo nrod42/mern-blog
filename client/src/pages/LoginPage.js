@@ -76,12 +76,12 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button variant="dark" type="submit">
           Login
         </Button>
       </Form>
       <div className="text-center">
-        <Button variant="success" className="mt-5" onClick={handleGuestLogin}>Login as Guest</Button>
+        <Button variant="warning" className="mt-5" onClick={handleGuestLogin}>Login as Guest</Button>
       </div>
     </>
   );
