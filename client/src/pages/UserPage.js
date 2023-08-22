@@ -45,7 +45,7 @@ const UserPage = () => {
   return (
     <Container>
       <Row>
-        <Col xs={12} md={3} className="d-flex flex-column justify-content-start align-items-center">
+        <Col md={3} className="d-flex flex-column justify-content-start align-items-center">
           <Image
             src={`${API_URL}/${userInfo.profilePic ? userInfo.profilePic : 'uploads/default-user-pic.png'}`}
             alt=""
@@ -53,6 +53,8 @@ const UserPage = () => {
             rounded
             // style={{maxHeight: '200px'}}
           />
+          </Col>
+          <Col md={9}>
           <h3>@{userInfo.username}</h3>
           <p>{`${userInfo.firstName} ${userInfo.lastName}`}</p>
           <p className="fw-bold">About Me:</p>
@@ -68,24 +70,48 @@ const UserPage = () => {
             </Button>
           )}
         </Col>
-        <Col xs={12} md={9} className="d-flex flex-column gap-4">
-          <h3 className="text-center">Posts By: {userInfo.username}</h3>
-          {userInfo.posts.map((post) => (
-            <Post
-              key={uniqid()}
-              {...post}
-              postAuthor={{ username: userInfo.username, _id: userInfo._id }}
-            />
-          ))}
-          <div className="text-center"><Button variant="dark">See All Posts</Button></div>
-        </Col>
+        </Row>
+
+        <Row>
+          <Col className="d-flex flex-column gap-4">
+            <h3 className="text-center">Recent Posts</h3>
+            <Row>
+              {userInfo.posts.map((post) => (
+                <Col md={6} key={uniqid()}>
+                  <Post
+                    {...post}
+                    postAuthor={{ username: userInfo.username, _id: userInfo._id }}
+                  />
+                </Col>
+              ))}
+            </Row>
+            <div className="text-center">
+              <Button variant="dark">See All Posts</Button>
+            </div>
+          </Col>
+        </Row>
+
+        <Row>
+          <h3 className="text-center">Recently Liked Posts</h3>
+          <div className="text-center">
+            <Button variant="dark">Show All</Button>
+          </div>
+        </Row>
+
+        <Row>
+          <h3 className="text-center">Follows</h3>
+          <div className="text-center">
+            <Button variant="dark">Show All</Button>
+          </div>
+        </Row>
+
         <EditUserModal
           show={show}
           handleClose={handleClose}
           userInfo={userInfo}
           setUpdateTimestamp={setUpdateTimestamp}
         />
-      </Row>
+      
     </Container>
   );
 };

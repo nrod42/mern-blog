@@ -23,6 +23,7 @@ router.get("/posts", async function (req, res) {
   );
 });
 
+// Get logged-in users following list
 router.get("/posts/:loggedInUserId/following", async (req, res) => {
   try {
     const {loggedInUserId} = req.params;
@@ -33,17 +34,12 @@ router.get("/posts/:loggedInUserId/following", async (req, res) => {
     const posts = await Post.find({ postAuthor: { $in: loggedInUser.follows } })
       .populate("postAuthor", ["username"])
       .sort({ createdAt: -1 })
-
-    console.log(posts)
     res.json(posts);
   } catch (error) {
     console.error("Error fetching following posts:", error);
     res.status(500).json({ error: "An error occurred while fetching following posts." });
   }
 });
-
-
-
 
 // Register a new user
 router.post("/register", async function (req, res) {
@@ -209,7 +205,6 @@ router.delete('/user/:userId/unfollow', async (req, res) => {
   }
 });
 
-
 // Create a new post
 router.post("/create", uploadMiddleware.single("postImg"), function (req, res) {
   const { originalname, path } = req.file;
@@ -258,7 +253,7 @@ router.get("/post/:id", async (req, res) => {
   }
 });
 
-// Add a new comment to a post
+// Create a comment
 router.post("/post/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -284,6 +279,29 @@ router.post("/post/:postId/comments", async (req, res) => {
   } catch (error) {
     console.error("Error adding comment:", error);
     res.status(500).json({ error: "An error occurred while adding the comment." });
+  }
+});
+
+// Update a comment
+router.put("/post/:postId/comments/:commentId", async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { commentContent } = req.body;
+
+    const comment = await Comment.findByIdAndUpdate(
+      commentId,
+      { commentContent },
+      { new: true }
+    );
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found." });
+    }
+
+    res.json({ message: "Comment updated successfully.", comment });
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    res.status(500).json({ error: "An error occurred while updating the comment." });
   }
 });
 
@@ -365,6 +383,52 @@ router.delete("/post/:id", async (req, res) => {
   });
   await postDoc.deleteOne({ _id: id });
   res.sendStatus(204);
+});
+
+router.post('/post/:postId/like', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { loggedInUserId } = req.body;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+    
+    if (loggedInUser.likes.includes(postId)) {
+      return res.status(400).json({error: "Post already liked"})
+    }
+
+    await User.updateOne(
+      {_id: loggedInUser },
+      { $push: { likes: postId } }
+    );
+
+    res.json({ message: "Post liked successfully." });
+  } catch(error) {
+    console.error("Error liking post:", error);
+    res.status(500).json({ error: "An error occurred while liking the post." });
+  }
+});
+
+router.delete('/post/:postId/unlike', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { loggedInUserId } = req.body;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+    
+    if (!loggedInUser.likes.includes(postId)) {
+      return res.status(400).json({error: "Post already liked"})
+    }
+
+    await User.updateOne(
+      {_id: loggedInUser },
+      { $pull: { likes: postId } }
+    );
+
+    res.json({ message: "Post unliked successfully." });
+  } catch(error) {
+    console.error("Error unlike post:", error);
+    res.status(500).json({ error: "An error occurred while unliking the post." });
+  }
 });
 
 // Search posts by query

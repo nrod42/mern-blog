@@ -16,7 +16,7 @@ const Post = ({ _id, postTitle, postSummary, postAuthor, createdAt, postImg }) =
             alt=""
             fluid
             rounded
-            // style={{maxHeight: '200px'}}
+            // style={{maxHeight: '600px', width: 'auto', objectFit: 'cover'}}
           />
         </Link>
       </Col>

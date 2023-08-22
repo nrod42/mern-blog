@@ -21,10 +21,11 @@ const PostPage = () => {
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
+  const [isPostLiked, SetIsPostLiked] = useState(false);
 
   const navigate = useNavigate();
 
-  const { postTitle, postAuthor, postImg, postContent, postComments, createdAt, updatedAt } = postInfo;
+  const { _id, postTitle, postAuthor, postImg, postContent, postComments, createdAt, updatedAt } = postInfo;
   // Fetch post information from the API
   const fetchPostInfo = async () => {
     try {
@@ -52,6 +53,16 @@ const PostPage = () => {
       console.error("Error checking following status:", error);
     }
   };
+
+  const checkLikedStatus = async () => {
+    try {
+      const userResponse = await fetch(`${API_URL}/user/${userInfo.id}`);
+      const userData = await userResponse.json();
+      SetIsPostLiked(userData.likes?.includes(_id));
+    } catch (error) {
+      console.error("Error checking like status:", error);
+    }
+  }
 
   // Delete the current post
   const deletePost = async () => {
@@ -92,6 +103,31 @@ const PostPage = () => {
       console.error(`Error ${isFollowingAuthor ? "un" : ""}following user:`, error);
     }
   };
+
+  const toggleLikePost = async () => {
+    try {
+      const endpoint = isPostLiked
+        ? `unlike`
+        : `like`;
+
+      const res = await fetch(`${API_URL}/post/${_id}/${endpoint}`, {
+        method: isPostLiked ? "DELETE" : "POST",
+        body: JSON.stringify({ loggedInUserId: userInfo?.id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        setUpdate(true);
+      } else {
+        console.error(`Error ${isPostLiked ? "un" : ""}liking user:`, res.status, res.statusText);
+      }
+    } catch (error) {
+      console.error(`Error ${isPostLiked ? "un" : ""}liking user:`, error);
+    }
+  }
   
   useEffect(() => {
     setLoading(true);
@@ -101,6 +137,7 @@ const PostPage = () => {
   useEffect(() => {
     if (userInfo && postAuthor) {
       checkFollowingStatus();
+      checkLikedStatus();
     }
   }, [userInfo, postAuthor]);
 
@@ -165,16 +202,27 @@ const PostPage = () => {
         {/* Render post author options */}
         <Col md="auto" className="ms-auto my-auto text-center">
           {/* Show edit and delete buttons for post author */}
-          {userInfo?.id === postAuthor?._id && (
-            <Link to={`/edit/${postInfo._id}`}>
-              <Button variant="dark">Edit</Button>
-            </Link>
-          )}
-          {userInfo?.id === postAuthor?._id && (
-            <Button variant="danger" className="ms-2" onClick={deletePost}>
-              Delete
+          {userInfo?.id === postAuthor?._id ? (
+            <>
+              <Link to={`/edit/${postInfo._id}`}>
+                <Button variant="dark">Edit</Button>
+              </Link>
+              <Button variant="danger" className="ms-2" onClick={deletePost}>
+                Delete
+              </Button>
+            </>
+          ) : (
+
+            <Button
+              className={isPostLiked ? "like-button" : ""}
+              variant={isPostLiked ? "dark" : "success"}
+              onClick={toggleLikePost}
+            >
+              {isPostLiked ? "Unlike" : "Like"}
             </Button>
+
           )}
+
         </Col>
       </Row>
 
