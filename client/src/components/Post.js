@@ -27,12 +27,12 @@ const Post = ({ _id, postTitle, postSummary, postAuthor, createdAt, postImg }) =
           </Link>
         </Row>
         <Row className="d-flex align-items-center">
-          <p className="text-muted">
+          <p className="text-muted d-flex gap-2">
             <Link to={`/user/${postAuthor?._id}`} className={"postLink"}>
               <span className="fw-bold">{postAuthor?.username}</span>
             </Link>
-            {" - "}
-            <span>{format(new Date(createdAt), "MMM d, yyyy h:mm a")}</span>
+            
+            <span>{format(new Date(createdAt), "M/dd/yy h:mm a")}</span>
           </p>
         </Row>
         <Row>

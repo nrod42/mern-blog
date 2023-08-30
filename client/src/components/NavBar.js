@@ -5,6 +5,7 @@ import { API_URL } from "../apiConfig";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Cookies from "js-cookie";
@@ -78,15 +79,16 @@ const NavBar = () => {
           </Form>
           <Nav>
             {userInfo ? (
-              <>
-                <Nav.Link onClick={logout}>Logout</Nav.Link>
-                <Nav.Link as={Link} to={"/create"}>
+              <NavDropdown title={userInfo.username} id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to={`/user/${userInfo.id}`}>Profile</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to={"/create"}>
                   New Post
-                </Nav.Link>
-                <Nav.Link as={Link} to={`/user/${userInfo.id}`}>
-                  Profile
-                </Nav.Link>
-              </>
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={logout}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
             ) : (
               <>
                 <Nav.Link as={Link} to={"/login"}>

@@ -57,24 +57,25 @@ const Home = () => {
     ) : (
     <Col className="d-flex flex-column gap-4">
       <Row>
-        <h2 className="d-flex justify-content-center">Posted? Logo</h2>
+        <h2 className="d-flex justify-content-center">Posted Logo</h2>
       </Row>
-      <Row className="mb-4">
-        <ButtonGroup>
-          <Button
-            variant={activeTab === "main" ? "dark" : "outline-dark"}
-            onClick={() => setActiveTab("main")}
-          >
-            All
-          </Button>
-          {userInfo && (<Button
-            variant={activeTab === "following" ? "dark" : "outline-dark"}
-            onClick={() => setActiveTab("following")}
-          >
-            Following
-          </Button>)}
-        </ButtonGroup>
-      </Row>
+      {userInfo && (
+        <Row className="mb-4">
+          <ButtonGroup>
+            <Button
+              variant={activeTab === "main" ? "dark" : "outline-dark"}
+              onClick={() => setActiveTab("main")}
+            >
+              All
+            </Button>
+            <Button
+              variant={activeTab === "following" ? "dark" : "outline-dark"}
+              onClick={() => setActiveTab("following")}
+            >
+              Following
+            </Button>
+          </ButtonGroup>
+      </Row>)}
       {posts.map((post) => (
         <Row key={uniqid()}>
           <Col className="d-flex justify-content-center">

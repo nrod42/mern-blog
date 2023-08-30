@@ -95,10 +95,22 @@ router.get("/profile", (req, res) => {
 // Get user information
 router.get("/user/:id", async (req, res) => {
   const { id } = req.params;
-  const userInfo = await User.findById(id).populate({
+  const userInfo = await User.findById(id)
+  .populate({
     path: "posts",
-    options: { sort: { createdAt: -1 } },
-  });
+    options: { sort: { createdAt: -1 } } // Sort posts by createdAt in descending order
+  })
+  .populate({
+    path: "likes",
+    populate: {
+      path: "postAuthor", // Populate the postAuthor field within the likes array
+      model: "User" // Specify the model to use for population
+    }
+  })
+  .populate({
+    path: "follows",
+    options: { sort: { createdAt: -1 } } // Sort follows by createdAt in descending order
+  })
   res.json(userInfo);
 });
 
@@ -148,7 +160,7 @@ router.post('/user/:userId/follow', async (req, res) => {
   try {
     const { userId } = req.params;
     const { loggedInUserId } = req.body; // You can pass the logged-in user's ID in the request body
-
+    // console.log(loggedInUserId)
     const user = await User.findById(userId);
     const loggedInUser = await User.findById(loggedInUserId);
 
@@ -161,11 +173,21 @@ router.post('/user/:userId/follow', async (req, res) => {
       return res.status(400).json({ error: "User is already following." });
     }
 
+
+    if (user.followers.includes(loggedInUserId)) {
+      return res.status(400).json({ error: "User is already a follower." });
+    }
+
     // Update the logged-in user's follows array using updateOne
     await User.updateOne(
       { _id: loggedInUserId },
       { $push: { follows: userId } }
     );
+
+    await User.updateOne(
+      { _id: userId },
+      { $push: { followers: loggedInUserId } }
+    )
 
     res.json({ message: "User followed successfully." });
   } catch (error) {
@@ -192,16 +214,93 @@ router.delete('/user/:userId/unfollow', async (req, res) => {
       return res.status(400).json({ error: "User is not following." });
     }
 
+    if (!user.followers.includes(loggedInUserId)) {
+      return res.status(400).json({ error: "User is not a follower." });
+    }
+
     // Update the logged-in user's follows array using updateOne
     await User.updateOne(
       { _id: loggedInUserId },
       { $pull: { follows: userId } }
     );
 
+    await User.updateOne(
+      { _id: userId },
+      { $pull: { followers: loggedInUserId } }
+    );
+
     res.json({ message: "User unfollowed successfully." });
   } catch (error) {
     console.error("Error unfollowing user:", error);
     res.status(500).json({ error: "An error occurred while unfollowing the user." });
+  }
+});
+
+// Like a post
+router.post('/post/:postId/like', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { loggedInUserId } = req.body;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+    const post = await Post.findById(postId);
+    
+    if (loggedInUser.likes.includes(postId)) {
+      return res.status(400).json({error: "Post already liked"})
+    }
+
+    if (post.postLikes.includes(loggedInUserId)) {
+      return res.status(400).json({error: "User already liked post"})
+    }
+
+    await User.updateOne(
+      {_id: loggedInUserId },
+      { $push: { likes: postId } }
+    );
+
+    await Post.updateOne(
+      {_id: postId },
+      { $push: { postLikes: loggedInUserId } }
+    );
+
+    res.json({ message: "Post liked successfully." });
+  } catch(error) {
+    console.error("Error liking post:", error);
+    res.status(500).json({ error: "An error occurred while liking the post." });
+  }
+});
+
+// Unlike post
+router.delete('/post/:postId/unlike', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { loggedInUserId } = req.body;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+    const post = await Post.findById(postId);
+
+    if (!loggedInUser.likes.includes(postId)) {
+      return res.status(400).json({error: "Post already unliked"})
+    }
+
+    if (!post.postLikes.includes(loggedInUserId)) {
+      return res.status(400).json({error: "User already unlikes this post"})
+    }
+
+    await User.updateOne(
+      {_id: loggedInUserId },
+      { $pull: { likes: postId } }
+    );
+
+    await Post.updateOne(
+      {_id: postId },
+      { $pull: { postLikes: loggedInUserId } }
+    );
+
+    res.json({ message: "Post unliked successfully." });
+  } catch(error) {
+    console.error("Error unlike post:", error);
+    res.status(500).json({ error: "An error occurred while unliking the post." });
   }
 });
 
@@ -237,11 +336,12 @@ router.get("/post/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const postDoc = await Post.findById(id)
-      .populate("postAuthor", ["username"])
+      .populate("postAuthor", ["username", "profilePic"])
       .populate({
         path: "postComments",
         populate: { path: "commentAuthor", select: "username" },
-      });
+      })
+      
 
     if (!postDoc) {
       return res.status(404).json({ error: "Post not found." });
@@ -385,61 +485,28 @@ router.delete("/post/:id", async (req, res) => {
   res.sendStatus(204);
 });
 
-router.post('/post/:postId/like', async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const { loggedInUserId } = req.body;
-
-    const loggedInUser = await User.findById(loggedInUserId);
-    
-    if (loggedInUser.likes.includes(postId)) {
-      return res.status(400).json({error: "Post already liked"})
-    }
-
-    await User.updateOne(
-      {_id: loggedInUser },
-      { $push: { likes: postId } }
-    );
-
-    res.json({ message: "Post liked successfully." });
-  } catch(error) {
-    console.error("Error liking post:", error);
-    res.status(500).json({ error: "An error occurred while liking the post." });
-  }
-});
-
-router.delete('/post/:postId/unlike', async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const { loggedInUserId } = req.body;
-
-    const loggedInUser = await User.findById(loggedInUserId);
-    
-    if (!loggedInUser.likes.includes(postId)) {
-      return res.status(400).json({error: "Post already liked"})
-    }
-
-    await User.updateOne(
-      {_id: loggedInUser },
-      { $pull: { likes: postId } }
-    );
-
-    res.json({ message: "Post unliked successfully." });
-  } catch(error) {
-    console.error("Error unlike post:", error);
-    res.status(500).json({ error: "An error occurred while unliking the post." });
-  }
-});
-
 // Search posts by query
 router.get("/results/:query", async (req, res) => {
   const { query } = req.params;
-  const results = await Post.find(
+  const postResults = await Post.find(
     { $text: { $search: query } },
     { score: { $meta: "textScore" } }
   )
     .populate("postAuthor", ["username"])
     .sort({ score: { $meta: "textScore" } });
+
+  const userResults = await User.find(
+    { $text: { $search: query } },
+    { score: { $meta: "textScore" } }
+  ).sort({ score: { $meta: "textScore" } });
+
+    const commentResults = await Comment.find(
+    { $text: { $search: query } },
+    { score: { $meta: "textScore" } }
+  ).sort({ score: { $meta: "textScore" } });
+
+  const results =  {postResults, userResults, commentResults};
+
   res.json(results);
 });
 

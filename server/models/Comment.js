@@ -12,6 +12,10 @@ const CommentSchema = new Schema(
     }
 );
 
+CommentSchema.index({ 
+  commentContent: "text", 
+});
+
 const CommentModel = model("Comment", CommentSchema);
 
 module.exports = CommentModel

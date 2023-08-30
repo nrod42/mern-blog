@@ -12,12 +12,19 @@ const UserSchema = new Schema(
   profilePic: String,
   posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
   follows: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
   },
   {
     timestamps: true,
   }
 );
+
+UserSchema.index({ 
+  username: "text", 
+  firstName: "text", 
+  lastName: "text", 
+});
 
 const UserModel = model("User", UserSchema);
 

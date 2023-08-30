@@ -26,6 +26,7 @@ const PostPage = () => {
   const navigate = useNavigate();
 
   const { _id, postTitle, postAuthor, postImg, postContent, postComments, createdAt, updatedAt } = postInfo;
+  
   // Fetch post information from the API
   const fetchPostInfo = async () => {
     try {
@@ -48,7 +49,7 @@ const PostPage = () => {
     try {
       const userResponse = await fetch(`${API_URL}/user/${userInfo.id}`);
       const userData = await userResponse.json();
-      setIsFollowingAuthor(userData.follows.includes(postAuthor._id));
+      setIsFollowingAuthor(userData.follows.some(item => item._id === postAuthor._id));
     } catch (error) {
       console.error("Error checking following status:", error);
     }
@@ -58,26 +59,11 @@ const PostPage = () => {
     try {
       const userResponse = await fetch(`${API_URL}/user/${userInfo.id}`);
       const userData = await userResponse.json();
-      SetIsPostLiked(userData.likes?.includes(_id));
+      SetIsPostLiked(userData.likes.some(item => item._id === _id));
     } catch (error) {
       console.error("Error checking like status:", error);
     }
   }
-
-  // Delete the current post
-  const deletePost = async () => {
-    try {
-      const res = await fetch(`${API_URL}/post/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (res.ok) {
-        navigate("/");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const toggleFollowUser = async () => {
     try {
@@ -128,6 +114,21 @@ const PostPage = () => {
       console.error(`Error ${isPostLiked ? "un" : ""}liking user:`, error);
     }
   }
+
+  // Delete the current post
+  const deletePost = async () => {
+    try {
+      const res = await fetch(`${API_URL}/post/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   
   useEffect(() => {
     setLoading(true);
@@ -168,62 +169,85 @@ const PostPage = () => {
     ) : (
     <Col>
       <Row className="mb-2">
+        
         <Col className="text-center">
           <h1>{postTitle}</h1>
-          <div className="d-flex justify-content-center">
-            <p className="text-muted">
-              <Link to={`/user/${postAuthor?._id}`} className={"postLink"}>
-                <span className="fw-bold">
-                  {postAuthor?.username}
-                </span>
-              </Link>
-              {" - "}
-              <span>
-                {format(new Date(createdAt), "MMM d, yyyy h:mm a")}
-              </span>
 
+          <div className="text-muted d-flex justify-content-between">
+            
+            <div className="d-flex flex-column justify-content-center align-items-start">
+              <div className="d-flex flex-row">
+                
+                  <div className="d-flex align-items-center gap-3">
+                    <Link to={`/user/${postAuthor?._id}`} className={"postLink"}>
+                      <div style={{height: '50px', width: '50px', borderRadius: '50%', overflow: 'hidden'}}>
+                        <Image
+                          src={`${API_URL}/${postAuthor.profilePic ? postAuthor.profilePic : 'uploads/default-user-pic.png'}`}
+                          alt=""
+                          fluid
+                          roundedCircle
+                          style={{minHeight: '50px'}}
+                        />
+                      </div>
+                    </Link>
+                    <div className="d-flex flex-column align-items-start">
+                      <div className="d-flex justify-content-center align-items-center">
+                        <Link to={`/user/${postAuthor?._id}`} className={"postLink"}>
+                          <div className="fw-bold ">{postAuthor?.username}</div>
+                        </Link>
+                        {userInfo && userInfo?.id !== postAuthor?._id ? (
+                          <Button
+                            variant="link"
+                            onClick={toggleFollowUser}
+                            style={{ color: isFollowingAuthor ? '#332D2D' : '#E4A11B' , textDecoration: 'none'}}
+                          >
+                            {isFollowingAuthor ? "Following" : "Follow"}
+                          </Button>
+                        ) : null}
+                      </div>
+                      <div className="d-flex gap-2 flex-wrap">
+                        {/* <div>
+                          <strong>Posted: </strong>
+                          {format(new Date(createdAt), "M-d-yy")}
+                        </div> */}
+                        {/* <div> */}
+                          <strong>Last Updated: </strong>
+                          {format(new Date(updatedAt), "M/d/yy h:mm a")}
+                        {/* </div> */}
+                      </div>
+                    </div>
+                  </div>
+                
 
-              <Button
-                className={isFollowingAuthor ? "following-button" : ""}
-                variant={isFollowingAuthor ? "dark" : "success"}
-                onClick={toggleFollowUser}
-              >
-                {isFollowingAuthor ? "Following" : "Follow"}
-              </Button>
-            </p>
+              </div>
+
+            </div>
+
+            {userInfo ? (<div>
+              {/* Show edit and delete buttons for post author */}
+              {userInfo?.id === postAuthor?._id ? (
+                  <>
+                    <Link to={`/edit/${_id}`}>
+                      <Button variant="dark">Edit</Button>
+                    </Link>
+                    <Button variant="danger" className="ms-2" onClick={deletePost}>
+                      Delete
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    className={isPostLiked ? "like-button" : ""}
+                    variant={isPostLiked ? "warning" : "dark"}
+                    onClick={toggleLikePost}
+                  >
+                    {isPostLiked ? "Unlike" : "Like"}
+                  </Button>
+                )}
+            </div>) : null}
+
           </div>
-          <p>              
-            <span className="text-muted">
-                last updated: {format(new Date(updatedAt), "MMM d, yyyy h:mm a")}
-            </span>
-          </p>
         </Col>
 
-        {/* Render post author options */}
-        <Col md="auto" className="ms-auto my-auto text-center">
-          {/* Show edit and delete buttons for post author */}
-          {userInfo?.id === postAuthor?._id ? (
-            <>
-              <Link to={`/edit/${postInfo._id}`}>
-                <Button variant="dark">Edit</Button>
-              </Link>
-              <Button variant="danger" className="ms-2" onClick={deletePost}>
-                Delete
-              </Button>
-            </>
-          ) : (
-
-            <Button
-              className={isPostLiked ? "like-button" : ""}
-              variant={isPostLiked ? "dark" : "success"}
-              onClick={toggleLikePost}
-            >
-              {isPostLiked ? "Unlike" : "Like"}
-            </Button>
-
-          )}
-
-        </Col>
       </Row>
 
       {/* Render post image */}

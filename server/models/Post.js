@@ -9,13 +9,18 @@ const PostSchema = new Schema(
     postImg: String,
     postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     postAuthor: { type: Schema.Types.ObjectId, ref: "User" },
+    postLikes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
   }
 );
 
-PostSchema.index({ postTitle: "text", postSummary: "text", postContent: "text" });
+PostSchema.index({ 
+  postTitle: "text", 
+  postSummary: "text", 
+  postContent: "text", 
+});
 
 const PostModel = model("Post", PostSchema);
 
