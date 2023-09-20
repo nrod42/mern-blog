@@ -57,10 +57,10 @@ const Home = () => {
     ) : (
     <Col className="d-flex flex-column gap-4">
       <Row>
-        <h2 className="d-flex justify-content-center">Posted Logo</h2>
+        <h2 className="d-flex justify-content-center">Post'd</h2>
       </Row>
       {userInfo && (
-        <Row className="mb-4">
+        <div className="mb-4 text-center">
           <ButtonGroup>
             <Button
               variant={activeTab === "main" ? "dark" : "outline-dark"}
@@ -75,14 +75,14 @@ const Home = () => {
               Following
             </Button>
           </ButtonGroup>
-      </Row>)}
-      {posts.map((post) => (
-        <Row key={uniqid()}>
-          <Col className="d-flex justify-content-center">
+      </div>)}
+      <Row >
+        {posts.map((post) => (
+          <Col key={uniqid()} xs={12} sm={6}  className="d-flex justify-content-center mb-4">
             <Post {...post} />
           </Col>
-        </Row>
-      ))}
+        ))}
+      </Row>
     </Col>
     )
   );

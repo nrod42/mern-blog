@@ -1,13 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import { UserContext } from "../UserContext";
 import { API_URL } from "../apiConfig";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
+  const [loginInfo, setLoginInfo] = useState({
+    username: "",
+    password: "",
+  });
   const [shouldAutoSubmit, setShouldAutoSubmit] = useState(false);
 
   const navigate = useNavigate();
@@ -19,10 +23,12 @@ const LoginPage = () => {
       e.preventDefault();
     }
 
+    console.log(loginInfo)
+
     try {
       const response = await fetch(`${API_URL}/login`, {
         method: "POST",
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ loginInfo }),
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -41,17 +47,25 @@ const LoginPage = () => {
 
   // Handle Guest Login button click
   const handleGuestLogin = () => {
-    setUsername("Guest");
-    setPassword("Guest");
+    // setUsername("Guest");
+    // setPassword("Guest");
+    setLoginInfo({username: "Guest", password: "Guest"})
     setShouldAutoSubmit(true);
   };
 
+  const handleChange = (e) => {
+    setLoginInfo({
+      ...loginInfo,
+      [e.target.name]: e.target.value
+    });
+  }
+
   // Automatically submit the form when auto-submit condition is met
   useEffect(() => {
-      if (shouldAutoSubmit && username === "Guest" && password === "Guest") {
-          login();
-      }
-  }, [shouldAutoSubmit, username, password]);
+    if (shouldAutoSubmit && loginInfo.username === "Guest" && loginInfo.password === "Guest") {
+      login();
+    }
+  }, [shouldAutoSubmit, loginInfo]);
 
   return (
     <>
@@ -63,8 +77,8 @@ const LoginPage = () => {
           <Form.Label>Username</Form.Label>
           <Form.Control
             placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            onChange={handleChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formPassword">
@@ -72,8 +86,8 @@ const LoginPage = () => {
           <Form.Control
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            onChange={handleChange}
           />
         </Form.Group>
         <Button variant="dark" type="submit">

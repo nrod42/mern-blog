@@ -12,20 +12,21 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Post from "../components/Post";
 import Container from "react-bootstrap/Container";
-import { Link } from "react-router-dom";
+import UserPageFollowingList from "./UserPageFollowingList";
 
 const UserPage = () => {
   const { userInfo: loggedUserInfo } = useContext(UserContext); // Get logged in user's info
 
   const [userInfo, setUserInfo] = useState("");
 
-  const { _id, firstName, lastName, about, profilePic, username, posts, likes, follows, createdAt } = userInfo;
+  const { _id, about, profilePic, username, posts, likes, follows, createdAt } = userInfo;
 
   // SHow/Hide Modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [updateTimestamp, setUpdateTimestamp] = useState(Date.now());
+  const [isFollowingUser, setIsFollowingUser] = useState(false);
 
   const { id } = useParams();
 
@@ -40,46 +41,98 @@ const UserPage = () => {
       }
     };
 
-
     fetchUserInfo();
   }, [id, updateTimestamp]);
 
-  if (!userInfo) return "";
+  // useEffect(() => {
+  //   if (userInfo) {
+  //     checkFollowingStatus();
+  //   }
+  // }, [userInfo]);
 
+  
+  // // Check if the logged-in user is following the post author
+  // const checkFollowingStatus = async () => {
+  //   try {
+  //     const userResponse = await fetch(`${API_URL}/user/${userInfo.id}`);
+  //     const userData = await userResponse.json();
+  //     setIsFollowingUser(userData.follows.some(item => item._id === userInfo.username._id));
+  //   } catch (error) {
+  //     console.error("Error checking following status:", error);
+  //   }
+  // };
+
+  // const toggleFollowUser = async () => {
+  //   try {
+  //     const endpoint = isFollowingUser
+  //       ? `unfollow`
+  //       : `follow`;
+  
+  //     // const res = 
+  //     await fetch(`${API_URL}/user/${userInfo.id}/${endpoint}`, {
+  //       method: isFollowingUser ? "DELETE" : "POST",
+  //       body: JSON.stringify({ loggedInUserId: userInfo?.id }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include",
+  //     });
+  
+  //     // if (res.ok) {
+  //     //   setUpdate(true);
+  //     // } else {
+  //     //   console.error(`Error ${isFollowingUser ? "un" : ""}following user:`, res.status, res.statusText);
+  //     // }
+  //   } catch (error) {
+  //     console.error(`Error ${isFollowingUser ? "un" : ""}following user:`, error);
+  //   }
+  // };
+
+  if (!userInfo) return "";
 
   return (
     <Container>
-      <Row >
+      <Row className="pb-5">
         <Col md={2} className="d-flex flex-column justify-content-start align-items-center">
-          <Image
-            src={`${API_URL}/${profilePic ? profilePic : 'uploads/default-user-pic.png'}`}
-            alt=""
-            fluid
-            rounded
-            // style={{maxHeight: '200px'}}
-          />
+        <div style={{ height: '200px', width: '200px', borderRadius: '50%', overflow: 'hidden' }}>
+                <Image
+                  src={`${API_URL}/${profilePic ? profilePic : 'uploads/default-user-pic.png'}`}
+                  alt=""
+                  fluid
+                  roundedCircle
+                  style={{ minHeight: '200px' }}
+                />
+              </div>
         </Col>
         <Col md={9}>
           <h3>{username}</h3>
-          <p>{`${firstName} ${lastName}`}</p>
+          <p className="text-muted fw-bold">Member Since: {format(new Date(createdAt), "MMM d, yyyy")}</p>
           <p className="fw-bold">About Me:</p>
           <p
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(about),
             }}
           />
-          <p>Member Since: {format(new Date(createdAt), "MMM d, yyyy")}</p>
+          
         </Col>
         <Col md={1}>
-            {loggedUserInfo?.id === _id && (
+            {loggedUserInfo?.id === _id ? (
               <Button variant="dark" onClick={handleShow}>
                 Edit
+              </Button>
+            ): (
+              <Button
+                variant="link"
+                // onClick={toggleFollowUser}
+                style={{ color: isFollowingUser ? '#332D2D' : '#E4A11B' , textDecoration: 'none'}}
+              >
+                {isFollowingUser ? "Following" : "Follow"}
               </Button>
             )}
           </Col>
       </Row>
 
-      <Row style={{marginTop: '100px', marginBottom: '100px', backgroundColor: 'rgba(100, 100, 100, .2)'}}>
+      <Row className='pt-5 pb-5' style={{ borderBottom: '1px solid #000', borderTop: '1px solid #000'}}>
         <Col className="d-flex flex-column gap-4" >
           <h3 className="mb-3 text-center">Recent Posts</h3>
           <Row>
@@ -98,7 +151,7 @@ const UserPage = () => {
         </Col>
       </Row>
 
-      <Row style={{marginTop: '100px', marginBottom: '100px', backgroundColor: 'rgba(100, 100, 100, .2)'}}>
+      <Row className='pt-5 pb-5' style={{ borderBottom: '1px solid #000', borderTop: '1px solid #000'}}>
         <Col className="d-flex flex-column gap-4">
           <h3 className="mb-3 text-center">Recently Liked Posts</h3>
           <Row>
@@ -117,27 +170,10 @@ const UserPage = () => {
         </Col>
       </Row>
 
-      <Row style={{marginTop: '100px', marginBottom: '100px', backgroundColor: 'rgba(100, 100, 100, .2)'}}>
+      <Row className='pt-5 pb-5' style={{ borderBottom: '1px solid #000', borderTop: '1px solid #000'}}>
         <Col className="d-flex flex-column gap-4">
           <h3 className="mb-3 text-center">Follows</h3>
-          {/* Have to make a user mini card or something, probs just the profile pic with the name */}
-          <Row>
-            {follows.map((user) => (
-              <Col md={2} key={uniqid()}>
-                <Link to={`/user/${user._id}`}>
-                  <p className="text-center">{user.username}</p>
-                </Link>
-                <Image
-                  src={`${API_URL}/${user.profilePic ? user.profilePic : 'uploads/default-user-pic.png'}`}
-                  alt=""
-                  fluid
-                  rounded
-                  // style={{maxHeight: '200px'}}
-                />
-
-              </Col>
-            ))}
-          </Row>
+          <UserPageFollowingList follows={follows} />
           <div className="text-center mt-3">
             <Button variant="dark">Show All</Button>
           </div>

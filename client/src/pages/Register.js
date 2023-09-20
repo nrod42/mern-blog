@@ -5,28 +5,32 @@ import Form from "react-bootstrap/Form";
 import { API_URL } from "../apiConfig";
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  
-
   const navigate = useNavigate();
+  
+  const [form, setForm] = useState({
+    email: "",
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    profilePic: "uploads/default-user-pic.png",
+  })
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  
 
   async function register(e) {
     e.preventDefault();
     try {
       const response = await fetch(`${API_URL}/register`, {
         method: "POST",
-        body: JSON.stringify({
-          email,
-          username,
-          password,
-          firstName,
-          lastName,
-          profilePic: "uploads/default-user-pic.png",
-        }),
+        body: JSON.stringify({form}),
         headers: { "Content-Type": "application/json" },
       });
       if (response.ok) {
@@ -50,16 +54,16 @@ const Register = () => {
         <Form.Control
           type="email"
           placeholder="E-Mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          onChange={handleChange}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formUsername">
         <Form.Label>Username</Form.Label>
         <Form.Control
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="username"
+          onChange={handleChange}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formPassword">
@@ -67,8 +71,8 @@ const Register = () => {
         <Form.Control
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          onChange={handleChange}
         />
       </Form.Group>
 
@@ -76,20 +80,20 @@ const Register = () => {
         <Form.Label>First Name</Form.Label>
         <Form.Control
           placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          name="firstName"
+          onChange={handleChange}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formLastName">
         <Form.Label>Last Name</Form.Label>
         <Form.Control
           placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          name="lastName"
+          onChange={handleChange}
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit">
+      <Button variant="dark" type="submit">
         Register
       </Button>
     </Form>

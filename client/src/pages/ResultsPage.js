@@ -38,7 +38,7 @@ const ResultsPage = () => {
 
   //before this, make comment search its own thing within each post if possible
     //if not,fuck comments
-  //first,run our search like before with the three seperate results.
+  //first,run our search like before with the three separate results.
   //IF userResults is not empty, fetch all posts from these users
   //for our merged totalresults array, we will combine the three original results,
     // then sort by score

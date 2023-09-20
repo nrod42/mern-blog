@@ -9,6 +9,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Cookies from "js-cookie";
+import Image from "react-bootstrap/Image";
 
 const NavBar = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
@@ -55,11 +56,13 @@ const NavBar = () => {
     navigate(`/results/${query}`);
   };
 
+
   return (
+    
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to={"/"}>
-          Posted
+          Post'd
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse className="justify-content-between">
@@ -79,6 +82,16 @@ const NavBar = () => {
           </Form>
           <Nav>
             {userInfo ? (
+              <>
+              <div style={{ height: '40px', width: '40px', borderRadius: '50%', overflow: 'hidden' }}>
+                <Image
+                  src={`${API_URL}/${userInfo.profilePic ? userInfo.profilePic : 'uploads/default-user-pic.png'}`}
+                  alt=""
+                  fluid
+                  roundedCircle
+                  style={{ minHeight: '40px' }}
+                />
+              </div>
               <NavDropdown title={userInfo.username} id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to={`/user/${userInfo.id}`}>Profile</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to={"/create"}>
@@ -89,6 +102,7 @@ const NavBar = () => {
                   Logout
                 </NavDropdown.Item>
               </NavDropdown>
+              </>
             ) : (
               <>
                 <Nav.Link as={Link} to={"/login"}>

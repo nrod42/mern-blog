@@ -9,8 +9,6 @@ import { API_URL } from "../apiConfig";
 
 const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
   const { id } = useParams();
-  const [firstName, setFirstName] = useState(userInfo.firstName);
-  const [lastName, setLastName] = useState(userInfo.lastName);
   const [email, setEmail] = useState(userInfo.email);
   const [about, setAbout] = useState(userInfo.about);
   const [profilePic, setProfilePic] = useState(userInfo.profilePic);
@@ -18,8 +16,6 @@ const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
   const updateUser = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.set("firstName", firstName);
-    data.set("lastName", lastName);
     data.set("email", email);
     data.set("about", about);
     if (profilePic?.[0]) {
@@ -51,23 +47,23 @@ const EditUserModal = ({ show, handleClose, userInfo, setUpdateTimestamp }) => {
           className="d-flex flex-column justify-content-center"
           // onSubmit={register}
         >
-          <Form.Group className="mb-3" controlId="formFirstName">
+          {/* <Form.Group className="mb-3" controlId="formFirstName">
             <Form.Label>First Name</Form.Label>
             <Form.Control
               placeholder="First Name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
-          </Form.Group>
+          </Form.Group> */}
 
-          <Form.Group className="mb-3" controlId="formLastName">
+          {/* <Form.Group className="mb-3" controlId="formLastName">
             <Form.Label>Last Name</Form.Label>
             <Form.Control
               placeholder="Last Name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
-          </Form.Group>
+          </Form.Group> */}
 
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Label>E-Mail</Form.Label>

@@ -43,7 +43,7 @@ router.get("/posts/:loggedInUserId/following", async (req, res) => {
 
 // Register a new user
 router.post("/register", async function (req, res) {
-  const { email, username, password, firstName, lastName } = req.body;
+  const { email, username, password, firstName, lastName } = req.body.form;
 
   try {
     const userDoc = await User.create({
@@ -61,17 +61,19 @@ router.post("/register", async function (req, res) {
 
 // User login
 router.post("/login", async function (req, res) {
-  const { username, password } = req.body;
+  const { username, password } = req.body.loginInfo;
   const userDoc = await User.findOne({ username });
   const passOk = bcrypt.compareSync(password, userDoc.password);
   const expiresIn = '1d';
+  console.log(userDoc)
 
   if (passOk) {
-    jwt.sign({ username, id: userDoc._id }, secret, { expiresIn }, (err, token) => {
+    jwt.sign({ username: userDoc.username, id: userDoc._id, profilePic: userDoc.profilePic }, secret, { expiresIn }, (err, token) => {
       if (err) throw err;
       res.cookie("token", token).json({
         id: userDoc._id,
-        username,
+        username: userDoc.username,
+        profilePic: userDoc.profilePic,
       });
     });
   } else {
@@ -339,10 +341,12 @@ router.get("/post/:id", async (req, res) => {
       .populate("postAuthor", ["username", "profilePic"])
       .populate({
         path: "postComments",
-        populate: { path: "commentAuthor", select: "username" },
-      })
+        populate: {
+          path: "commentAuthor",
+          select: ["username", "profilePic"], // Add profilePic to select
+        },
+      });
       
-
     if (!postDoc) {
       return res.status(404).json({ error: "Post not found." });
     }
@@ -352,6 +356,7 @@ router.get("/post/:id", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching the post." });
   }
 });
+
 
 // Create a comment
 router.post("/post/:postId/comments", async (req, res) => {

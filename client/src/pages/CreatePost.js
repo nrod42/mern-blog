@@ -7,25 +7,43 @@ import ReactQuillEditor from "../components/ReactQuillEditor";
 import "react-quill/dist/quill.snow.css";
 
 const Create = () => {
-  const [postTitle, setPostTitle] = useState("");
-  const [postSummary, setPostSummary] = useState("");
-  const [postContent, setPostContent] = useState("");
-  const [postImg, setPostImg] = useState("");
+  const [formData, setFormData] = useState({
+    postTitle: "",
+    postSummary: "",
+    postContent: "",
+    postImg: null,
+  });
 
   const navigate = useNavigate();
 
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    const updatedFormData = { ...formData };
+
+    if (name === "postImg") {
+      updatedFormData[name] = files[0];
+    } else {
+      updatedFormData[name] = value;
+    }
+
+    setFormData(updatedFormData);
+  };
+
   const createNewPost = async (e) => {
     e.preventDefault();
+
     const data = new FormData();
-    data.set("postTitle", postTitle);
-    data.set("postSummary", postSummary);
-    data.set("postContent", postContent);
-    data.set("postImg", postImg[0]);
+    data.append("postTitle", formData.postTitle);
+    data.append("postSummary", formData.postSummary);
+    data.append("postContent", formData.postContent);
+    data.append("postImg", formData.postImg);
+
     await fetch(`${API_URL}/create`, {
       method: "POST",
       body: data,
       credentials: "include",
     });
+    
     navigate("/");
   };
 
@@ -34,32 +52,38 @@ const Create = () => {
       <Form.Group className="mb-3" controlId="postTitle">
         <Form.Label>Title</Form.Label>
         <Form.Control
-          value={postTitle}
-          onChange={(e) => setPostTitle(e.target.value)}
+          name='postTitle'
+          value={formData.postTitle}
+          onChange={handleInputChange}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="postSummary">
         <Form.Label>Summary</Form.Label>
         <Form.Control
-          value={postSummary}
-          onChange={(e) => setPostSummary(e.target.value)}
+          name="postSummary"
+          value={formData.postSummary}
+          onChange={handleInputChange}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="newPostImg">
         <Form.Label>Upload Image</Form.Label>
         <Form.Control
+          name="postImg"
           type="file"
-          onChange={(e) => setPostImg(e.target.files)}
+          onChange={handleInputChange}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="postText">
         <Form.Label>Body</Form.Label>
         <ReactQuillEditor
-          value={postContent}
-          onChange={(newValue) => setPostContent(newValue)}
+          name="postContent"
+          value={formData.postContent}
+          onChange={(newValue) =>
+            setFormData({ ...formData, postContent: newValue })
+          }
         />
       </Form.Group>
 

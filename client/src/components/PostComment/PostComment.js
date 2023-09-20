@@ -1,11 +1,10 @@
 import React, { useState, useContext } from "react";
-import DOMPurify from "dompurify";
 import { format } from "date-fns";
-import { API_URL } from "../apiConfig";
-import Button from "react-bootstrap/Button";
-import { UserContext } from "../UserContext";
-import { Link } from "react-router-dom";
-import ReactQuillEditor from "./ReactQuillEditor"; // Import your ReactQuillEditor component
+import { API_URL } from "../../apiConfig";
+import { UserContext } from "../../UserContext";
+import PostCommentButtons from "./PostCommentButtons";
+import PostCommentHeader from "./PostCommentHeader";
+import PostCommentContent from "./PostCommentContent";
 
 const PostComment = ({ comment, handleUpdate }) => {
   const { _id, post, commentAuthor, commentContent, createdAt } = comment;
@@ -29,7 +28,7 @@ const PostComment = ({ comment, handleUpdate }) => {
       console.error("Network error:", error);
     }
   };
-
+  
   const editComment = async () => {
     setEditing(true);
   };
@@ -38,7 +37,7 @@ const PostComment = ({ comment, handleUpdate }) => {
     setEditing(false);
     setEditedComment(commentContent);
   };
-
+  
   const submitEdit = async () => {
     try {
       const response = await fetch(`${API_URL}/post/${post}/comments/${_id}`, {
@@ -64,51 +63,24 @@ const PostComment = ({ comment, handleUpdate }) => {
   };
 
   return (
-    <div>
-      <p className="fw-bold">
-        <Link to={`/user/${commentAuthor._id}`}>{commentAuthor.username}</Link>
-      </p>
-
-      {editing ? (
-        <ReactQuillEditor
-          value={editedComment}
-          onChange={setEditedComment}
-        />
-      ) : (
-        <p
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(commentContent),
-          }}
-        />
-      )}
-
-      <p className="text-muted">
-        {format(new Date(createdAt), "MMMM d, yyyy h:mm a")}
-      </p>
-
-      {userInfo?.id === commentAuthor._id ? (
-        <div>
-          {editing ? (
-            <div>
-              <Button variant="success" onClick={submitEdit}>
-                Submit
-              </Button>
-              <Button variant="danger" onClick={cancelEdit}>
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <Button variant="dark" onClick={editComment}>
-                Edit
-              </Button>
-              <Button variant="danger" onClick={deleteComment}>
-                Delete
-              </Button>
-            </div>
-          )}
+    <div className="d-flex flex-row justify-content-between align-items-center">
+      <div>
+        <PostCommentHeader commentAuthor={commentAuthor} />
+        <PostCommentContent editing={editing} commentContent={commentContent} editedComment={editedComment} setEditedComment={setEditedComment}/>
+        <div className="text-muted">
+          {format(new Date(createdAt), "M/dd/yy h:mm a")}
         </div>
-      ) : null}
+      </div>
+
+      {userInfo?.id === commentAuthor._id ? 
+        <PostCommentButtons 
+          editing={editing}
+          submitEdit={submitEdit}
+          cancelEdit={cancelEdit} 
+          editComment={editComment} 
+          deleteComment={deleteComment}/> 
+        : null
+        }
     </div>
   );
 };
