@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import { API_URL } from "../apiConfig";
+import { UserContext } from "../../UserContext";
+import { API_URL } from "../../apiConfig";
 import DOMPurify from "dompurify";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
-import PostComment from "../components/PostComment/PostComment";
-import PostCommentForm from "../components/PostComment/PostCommentForm";
-import PostPageHeader from "./PostPage/PostPageHeader";
-import LoadingSpinner from "../components/LoadingSpinner";
+import PostComment from "../../components/PostComment/PostComment";
+import PostCommentForm from "../../components/PostComment/PostCommentForm";
+import PostPageHeader from "./PostPageHeader";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import uniqid from 'uniqid';
 
 const PostPage = () => {

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import uniqid from "uniqid";
-import { API_URL } from "../apiConfig";
+import { API_URL } from "../../apiConfig";
 
 const UserPageFollowingList = ({follows}) => {
     return (

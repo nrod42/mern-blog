@@ -78,7 +78,7 @@ const Home = () => {
       </div>)}
       <Row >
         {posts.map((post) => (
-          <Col key={uniqid()} xs={12} sm={6}  className="d-flex justify-content-center mb-4">
+          <Col key={uniqid()} xs={12} sm={6} className="d-flex justify-content-center mb-4">
             <Post {...post} />
           </Col>
         ))}

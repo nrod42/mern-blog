@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import { API_URL } from "../apiConfig";
+import { UserContext } from "../../UserContext";
+import { API_URL } from "../../apiConfig";
 import DOMPurify from "dompurify";
 import { format } from "date-fns";
 import uniqid from "uniqid";
-import EditUserModal from "../components/EditUserModal";
+import EditUserModal from "../../components/EditUserModal";
 import Image from "react-bootstrap/Image";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import Post from "../components/Post";
+import Post from "../../components/Post";
 import Container from "react-bootstrap/Container";
 import UserPageFollowingList from "./UserPageFollowingList";
 
