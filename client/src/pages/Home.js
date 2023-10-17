@@ -3,31 +3,33 @@ import Post from "../components/Post";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import uniqid from "uniqid";
 import { API_URL } from "../apiConfig";
-import { ColorRing } from "react-loader-spinner";
 import { UserContext } from "../UserContext";
+import HomePageHeader from "./HomePageHeader";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Home = () => {
-  const {userInfo} = useContext(UserContext)
+  const { userInfo } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("main")
+  const [activeTab, setActiveTab] = useState("main");
 
   useEffect(() => {
     setLoading(true);
-  
+
     const fetchPosts = async () => {
       try {
         let response;
-  
+
         if (activeTab === "main") {
           response = await fetch(`${API_URL}/posts`);
-        } else if (activeTab === "following" && userInfo) { // Only fetch if there is a logged-in user
+        } else if (activeTab === "following" && userInfo) {
+          // Only fetch if there is a logged-in user
           response = await fetch(`${API_URL}/posts/${userInfo.id}/following`);
         }
-  
+
         const posts = await response.json();
         setPosts(posts);
       } catch (error) {
@@ -36,55 +38,51 @@ const Home = () => {
         setLoading(false);
       }
     };
-  
+
     fetchPosts();
   }, [activeTab, userInfo]);
-  
 
-  return (
-    loading ? (          
-      <div className="text-center mt-5 mb-5">
-        <ColorRing
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="blocks-loading"
-          wrapperStyle={{}}
-          wrapperClass="blocks-wrapper"
-          colors={["#198754", "#198754", "#198754", "#198754", "#198754"]}
-        />
-      </div>
-    ) : (
-    <Col className="d-flex flex-column gap-4">
-      <Row>
-        <h2 className="d-flex justify-content-center">Post'd</h2>
-      </Row>
-      {userInfo && (
-        <div className="mb-4 text-center">
-          <ButtonGroup>
-            <Button
-              variant={activeTab === "main" ? "dark" : "outline-dark"}
-              onClick={() => setActiveTab("main")}
+  return loading ? (
+    <LoadingSpinner />
+  ) : (
+    <>
+      <HomePageHeader />
+      <Col className="d-flex flex-column gap-4">
+        <Row>
+          <h2 className="d-flex justify-content-center">Post'd</h2>
+        </Row>
+        {userInfo && (
+          <div className="mb-4 text-center">
+            <ButtonGroup>
+              <Button
+                variant={activeTab === "main" ? "dark" : "outline-dark"}
+                onClick={() => setActiveTab("main")}
+              >
+                All
+              </Button>
+              <Button
+                variant={activeTab === "following" ? "dark" : "outline-dark"}
+                onClick={() => setActiveTab("following")}
+              >
+                Following
+              </Button>
+            </ButtonGroup>
+          </div>
+        )}
+        <Row>
+          {posts.map((post) => (
+            <Col
+              key={uniqid()}
+              xs={12}
+              sm={6}
+              className="d-flex justify-content-center mb-4"
             >
-              All
-            </Button>
-            <Button
-              variant={activeTab === "following" ? "dark" : "outline-dark"}
-              onClick={() => setActiveTab("following")}
-            >
-              Following
-            </Button>
-          </ButtonGroup>
-      </div>)}
-      <Row >
-        {posts.map((post) => (
-          <Col key={uniqid()} xs={12} sm={6} className="d-flex justify-content-center mb-4">
-            <Post {...post} />
-          </Col>
-        ))}
-      </Row>
-    </Col>
-    )
+              <Post {...post} />
+            </Col>
+          ))}
+        </Row>
+      </Col>
+    </>
   );
 };
 
