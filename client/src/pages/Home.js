@@ -46,7 +46,7 @@ const Home = () => {
     <LoadingSpinner />
   ) : (
     <>
-      <HomePageHeader />
+      <HomePageHeader posts={posts} />
       <Col className="d-flex flex-column gap-4">
         <Row>
           <h2 className="d-flex justify-content-center">Post'd</h2>
@@ -70,7 +70,7 @@ const Home = () => {
           </div>
         )}
         <Row>
-          {posts.map((post) => (
+          {posts?.map((post) => (
             <Col
               key={uniqid()}
               xs={12}
