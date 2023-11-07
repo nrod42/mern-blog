@@ -18,7 +18,6 @@ const Post = ({
         <Card.Img
           variant="top"
           src={`${API_URL}/${postImg}`}
-          // style={{ maxHeight: "300px" }}
         />
       </Link>
       <Card.Body>

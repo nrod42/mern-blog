@@ -6,6 +6,7 @@ import DOMPurify from "dompurify";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
+import Container from "react-bootstrap/Container";
 import PostComment from "../../components/PostComment/PostComment";
 import PostCommentForm from "../../components/PostComment/PostCommentForm";
 import PostPageHeader from "./PostPageHeader";
@@ -156,51 +157,49 @@ const PostPage = () => {
     (
       <LoadingSpinner />
     ) : (
-      <Col>
-        <Row className="mb-2 text-center">
-          <PostPageHeader
-            postInfo={postInfo}
-            userInfo={userInfo}
-            toggleFollowUser={toggleFollowUser}
-            isFollowingAuthor={isFollowingAuthor}
-            toggleLikePost={toggleLikePost}
-            isPostLiked={isPostLiked}
-            deletePost={deletePost}
-          />
-        </Row>
-
-        {/* Render post image */}
-        <Row className="mb-4">
-          <Image
-            src={`${API_URL}/${postImg}`}
-            alt=""
-            fluid
-            rounded
-            style={{ height: "auto", width: "100%" }}
-          />
-        </Row>
-
-        {/* Render post content */}
-        <Row>
-          <Col
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(postContent),
-            }}
-          />
-        </Row>
-
-        {/* Render comment form */}
-        <Row>
-          <PostCommentForm handleUpdate={handleUpdate}/>     
-        </Row>
-
-        {/* Render post comments */}
-        <Row className="mt-5 gap-3">
-          {postComments?.map((comment) => (
-            <PostComment key={uniqid()} comment={comment} handleUpdate={handleUpdate}/>
-          ))}
-        </Row>
-      </Col>
+      <Container className="mt-4 mb-5">
+        <Col>
+          <Row className="mb-2 text-center">
+            <PostPageHeader
+              postInfo={postInfo}
+              userInfo={userInfo}
+              toggleFollowUser={toggleFollowUser}
+              isFollowingAuthor={isFollowingAuthor}
+              toggleLikePost={toggleLikePost}
+              isPostLiked={isPostLiked}
+              deletePost={deletePost}
+            />
+          </Row>
+          {/* Render post image */}
+          <Row className="mb-4">
+            <Image
+              src={`${API_URL}/${postImg}`}
+              alt=""
+              fluid
+              rounded
+              style={{ height: "auto", width: "100%" }}
+            />
+          </Row>
+          {/* Render post content */}
+          <Row>
+            <Col
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(postContent),
+              }}
+            />
+          </Row>
+          {/* Render comment form */}
+          <Row>
+            <PostCommentForm handleUpdate={handleUpdate}/>
+          </Row>
+          {/* Render post comments */}
+          <Row className="mt-5 gap-3">
+            {postComments?.map((comment) => (
+              <PostComment key={uniqid()} comment={comment} handleUpdate={handleUpdate}/>
+            ))}
+          </Row>
+        </Col>
+      </Container>
   ));
 };
 

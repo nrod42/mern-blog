@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { API_URL } from "../apiConfig";
+import Container from "react-bootstrap/Container";
 
 const PostForm = ({ isEditing }) => {
   const { id } = useParams();
@@ -63,42 +64,40 @@ const PostForm = ({ isEditing }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group className="mb-3" controlId="postTitle">
-        <Form.Label>Title</Form.Label>
-        <Form.Control
-          value={postTitle}
-          onChange={(e) => setPostTitle(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="postSummary">
-        <Form.Label>Summary</Form.Label>
-        <Form.Control
-          value={postSummary}
-          onChange={(e) => setPostSummary(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="newPostImg">
-        <Form.Label>Upload Image</Form.Label>
-        <Form.Control
-          type="file"
-          onChange={(e) => setPostImg(e.target.files)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="postText">
-        <ReactQuillEditor
-          value={postContent}
-          onChange={(newValue) => setPostContent(newValue)}
-        />
-      </Form.Group>
-
-      <Button variant="dark" type="submit">
-        {isEditing ? "Update Post" : "Create Post"}
-      </Button>
-    </Form>
+    <Container className="mt-4 mb-5">
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="postTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            value={postTitle}
+            onChange={(e) => setPostTitle(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="postSummary">
+          <Form.Label>Summary</Form.Label>
+          <Form.Control
+            value={postSummary}
+            onChange={(e) => setPostSummary(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="newPostImg">
+          <Form.Label>Upload Image</Form.Label>
+          <Form.Control
+            type="file"
+            onChange={(e) => setPostImg(e.target.files)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="postText">
+          <ReactQuillEditor
+            value={postContent}
+            onChange={(newValue) => setPostContent(newValue)}
+          />
+        </Form.Group>
+        <Button variant="dark" type="submit">
+          {isEditing ? "Update Post" : "Create Post"}
+        </Button>
+      </Form>
+    </Container>
   );
 };
 

@@ -9,7 +9,6 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Cookies from "js-cookie";
-import Image from "react-bootstrap/Image";
 
 const NavBar = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
@@ -59,7 +58,7 @@ const NavBar = () => {
 
   return (
     
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
       <Container>
         <Navbar.Brand as={Link} to={"/"}>
           Post'd
@@ -67,7 +66,7 @@ const NavBar = () => {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse className="justify-content-between">
           <div></div>
-          <Form className="d-flex" onSubmit={fetchResults}>
+          <Form className="d-flex flex-grow-1 ms-5 me-5" onSubmit={fetchResults}>
             <Form.Control
               type="search"
               placeholder="Search"
@@ -83,13 +82,10 @@ const NavBar = () => {
           <Nav>
             {userInfo ? (
               <>
-              <div style={{ height: '40px', width: '40px', borderRadius: '50%', overflow: 'hidden' }}>
-                <Image
+              <div className="userProfilePicWrapper">
+                <img
                   src={`${API_URL}/${userInfo.profilePic ? userInfo.profilePic : 'uploads/default-user-pic.png'}`}
                   alt=""
-                  fluid
-                  roundedCircle
-                  style={{ minHeight: '40px' }}
                 />
               </div>
               <NavDropdown title={userInfo.username} id="basic-nav-dropdown">

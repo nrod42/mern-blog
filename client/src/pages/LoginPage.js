@@ -4,10 +4,9 @@ import { UserContext } from "../UserContext";
 import { API_URL } from "../apiConfig";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/esm/Container";
 
 const LoginPage = () => {
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
   const [loginInfo, setLoginInfo] = useState({
     username: "",
     password: "",
@@ -22,8 +21,6 @@ const LoginPage = () => {
     if (e) {
       e.preventDefault();
     }
-
-    console.log(loginInfo)
 
     try {
       const response = await fetch(`${API_URL}/login`, {
@@ -68,7 +65,7 @@ const LoginPage = () => {
   }, [shouldAutoSubmit, loginInfo]);
 
   return (
-    <>
+    <Container className="mt-4 mb-5">
       <Form
         className="d-flex flex-column justify-content-center"
         onSubmit={login}
@@ -97,7 +94,7 @@ const LoginPage = () => {
       <div className="text-center">
         <Button variant="warning" className="mt-5" onClick={handleGuestLogin}>Login as Guest</Button>
       </div>
-    </>
+    </Container>
   );
 };
 

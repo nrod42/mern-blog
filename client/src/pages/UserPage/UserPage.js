@@ -44,54 +44,9 @@ const UserPage = () => {
     fetchUserInfo();
   }, [id, updateTimestamp]);
 
-  // useEffect(() => {
-  //   if (userInfo) {
-  //     checkFollowingStatus();
-  //   }
-  // }, [userInfo]);
 
-  
-  // // Check if the logged-in user is following the post author
-  // const checkFollowingStatus = async () => {
-  //   try {
-  //     const userResponse = await fetch(`${API_URL}/user/${userInfo.id}`);
-  //     const userData = await userResponse.json();
-  //     setIsFollowingUser(userData.follows.some(item => item._id === userInfo.username._id));
-  //   } catch (error) {
-  //     console.error("Error checking following status:", error);
-  //   }
-  // };
-
-  // const toggleFollowUser = async () => {
-  //   try {
-  //     const endpoint = isFollowingUser
-  //       ? `unfollow`
-  //       : `follow`;
-  
-  //     // const res = 
-  //     await fetch(`${API_URL}/user/${userInfo.id}/${endpoint}`, {
-  //       method: isFollowingUser ? "DELETE" : "POST",
-  //       body: JSON.stringify({ loggedInUserId: userInfo?.id }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     });
-  
-  //     // if (res.ok) {
-  //     //   setUpdate(true);
-  //     // } else {
-  //     //   console.error(`Error ${isFollowingUser ? "un" : ""}following user:`, res.status, res.statusText);
-  //     // }
-  //   } catch (error) {
-  //     console.error(`Error ${isFollowingUser ? "un" : ""}following user:`, error);
-  //   }
-  // };
-
-  if (!userInfo) return "";
-
-  return (
-    <Container>
+  return userInfo ? (
+    <Container className="mt-4 mb-5">
       <Row className="pb-5">
         <Col md={2} className="d-flex flex-column justify-content-start align-items-center">
         <div style={{ height: '200px', width: '200px', borderRadius: '50%', overflow: 'hidden' }}>
@@ -188,7 +143,7 @@ const UserPage = () => {
       />
       
     </Container>
-  );
-};
+    ) : null;
+}
 
 export default UserPage;

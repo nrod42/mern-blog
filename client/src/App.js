@@ -8,16 +8,13 @@ import Register from "./pages/Register";
 import PostPage from "./pages/PostPage/PostPage";
 import UserPage from "./pages/UserPage/UserPage";
 import ResultsPage from "./pages/ResultsPage";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Container from "react-bootstrap/Container";
 import PostForm from "./pages/PostForm";
 
 const App = () => {
   return (
     <UserContextProvider>
+      <NavBar />
       <main>
-        <NavBar />
-        <Container className="mt-4 mb-5">
           <Routes>
             <Route index element={<Home />} />
             <Route path={"/login"} element={<LoginPage />} />
@@ -28,7 +25,6 @@ const App = () => {
             <Route path={"/user/:id"} element={<UserPage />} />
             <Route path={"/results/:query"} element={<ResultsPage />} />
           </Routes>
-        </Container>
       </main>
       <footer className="text-center">&copy; {new Date().getFullYear()} - Nigel Rodriguez</footer>
     </UserContextProvider>
