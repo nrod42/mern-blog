@@ -10,6 +10,7 @@ import { API_URL } from "../apiConfig";
 import { UserContext } from "../UserContext";
 import HomePageHeader from "./HomePageHeader";
 import LoadingSpinner from "../components/LoadingSpinner";
+// import HomePageSidebar from "./HomePageSidebar";
 
 const Home = () => {
   const { userInfo } = useContext(UserContext);
@@ -48,40 +49,46 @@ const Home = () => {
   ) : (
     <>
       <HomePageHeader posts={posts} />
-      <Container className="mt-5 mb-5">
-        <Col className="d-flex flex-column gap-4">
-          {userInfo && (
-            <div className="mt-4 mb-4 text-center">
-              <ButtonGroup>
-                <Button
-                  variant={activeTab === "home" ? "dark" : "outline-dark"}
-                  onClick={() => setActiveTab("home")}
+      <Container className="mt-5 mb-5 ">
+        <Row>
+          <Col className="d-flex flex-column gap-4">
+            {userInfo && (
+              <div className="mt-4 mb-4 text-center">
+                <ButtonGroup>
+                  <Button
+                    variant={activeTab === "home" ? "dark" : "outline-dark"}
+                    onClick={() => setActiveTab("home")}
+                  >
+                    Home
+                  </Button>
+                  <Button
+                    variant={activeTab === "following" ? "dark" : "outline-dark"}
+                    onClick={() => setActiveTab("following")}
+                  >
+                    Following
+                  </Button>
+                </ButtonGroup>
+              </div>
+            )}
+            <Row className="gx-5 gy-5">
+              {posts?.map((post) => (
+                <Col
+                  key={uniqid()}
+                  xs={12}
+                  sm={6}
+                  className="d-flex justify-content-center"
                 >
-                  Home
-                </Button>
-                <Button
-                  variant={activeTab === "following" ? "dark" : "outline-dark"}
-                  onClick={() => setActiveTab("following")}
-                >
-                  Following
-                </Button>
-              </ButtonGroup>
-            </div>
-          )}
-          <Row className="gx-5 gy-5">
-            {posts?.map((post) => (
-              <Col
-                key={uniqid()}
-                xs={12}
-                sm={6}
-                className="d-flex justify-content-center"
-              >
-                <Post {...post} />
-              </Col>
-            ))}
-          </Row>
-        </Col>
+                  <Post {...post} />
+                </Col>
+              ))}
+            </Row>
+          </Col>
+          {/* <Col md={3}>
+            <HomePageSidebar posts={posts}/>
+          </Col> */}
+        </Row>
       </Container>
+      
     </>
   );
 };
