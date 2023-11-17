@@ -10,6 +10,7 @@ main {
   margin-top: 3.5rem;
   /* height: 100%; */
   overflow: hidden;
+  min-height: 100vh;
 }
 
 a {
@@ -95,10 +96,15 @@ header {
   object-fit: contain;
 }
 
+.editBtnIcon, .delBtnIcon {
+  height: 35px;
+}
+
 footer {
   color: white;
   background-color: black;
   padding: 5px 0;
+
 }
 
 

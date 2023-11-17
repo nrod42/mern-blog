@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 import uniqid from "uniqid";
 import { API_URL } from "../apiConfig";
 import { UserContext } from "../UserContext";
-import HomePageHeader from "./HomePageHeader";
+// import HomePageHeader from "./HomePageHeader";
 import LoadingSpinner from "../components/LoadingSpinner";
 // import HomePageSidebar from "./HomePageSidebar";
 
@@ -48,8 +48,9 @@ const Home = () => {
     <LoadingSpinner />
   ) : (
     <>
-      <HomePageHeader posts={posts} />
-      <Container className="mt-5 mb-5 ">
+      {/* <HomePageHeader posts={posts} /> */}
+      <Container className="mt-4 mb-4 ">
+        <h1 className="text-center mb-3">Post'd</h1>
         <Row>
           <Col className="d-flex flex-column gap-4">
             {userInfo && (

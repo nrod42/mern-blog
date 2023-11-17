@@ -4,20 +4,20 @@ import deleteIcon from '../../icons/trash-icon.svg';
 
 const PostCommentButtons = ({ editing, submitEdit, cancelEdit, editComment, deleteComment }) => {
     return (
-        <div>
+        <div className="mt-3 d-flex justify-content-center align-items-center">
             {editing ? (
-                <div>
-                    <Button variant="success" onClick={submitEdit}>
+                <div className="d-flex gap-2">
+                    <Button variant="warning" onClick={submitEdit}>
                         Submit
                     </Button>
-                    <Button variant="danger" onClick={cancelEdit}>
+                    <Button variant="dark" onClick={cancelEdit}>
                         Cancel
                     </Button>
                 </div>
             ) : (
                 <div>
-                    <img src={editIcon} onClick={editComment} />
-                    <img src={deleteIcon} onClick={deleteComment} />
+                    <img className="editBtnIcon" src={editIcon} onClick={editComment} />
+                    <img className="delBtnIcon" src={deleteIcon} onClick={deleteComment} />
                 </div>
             )}
         </div>

@@ -63,8 +63,8 @@ const PostComment = ({ comment, handleUpdate }) => {
   };
 
   return (
-    <div className="d-flex flex-row justify-content-between align-items-center">
-      <div>
+    <div className={`d-flex ${editing ? 'flex-column ': 'flex-row justify-content-between align-items-center'} `}>
+      <div className="d-flex flex-column gap-3">
         <PostCommentHeader commentAuthor={commentAuthor} />
         <PostCommentContent editing={editing} commentContent={commentContent} editedComment={editedComment} setEditedComment={setEditedComment}/>
         <div className="text-muted">
